@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { shared, C } from "./styles";
 import BrandLogo from "./BrandLogo";
 import { useNavigation } from "@react-navigation/native";
@@ -82,8 +82,10 @@ export default function LoginSeller() {
     }
   }
       return (
-
-    <View style={shared.screen}>
+    <KeyboardAvoidingView
+      style={shared.screen}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <ScrollView contentContainerStyle={shared.scroll} keyboardShouldPersistTaps="handled">
         <BrandLogo subtitle="Seller portal — manage your restaurant" />
 
@@ -132,7 +134,7 @@ export default function LoginSeller() {
         </Text>
         </TouchableOpacity>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

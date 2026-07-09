@@ -4,8 +4,7 @@ import {
     ActivityIndicator, ScrollView, TouchableOpacity,
 } from "react-native";
 import MenuCard, { MenuItem } from "./MenuCard";
-
-const BASE_URL = "http://10.120.18.143:3000/api";
+import { API } from "../../../Extras/api";
 
 interface Props {
     sellerId: string;
@@ -25,18 +24,17 @@ export default function MenuSection({ sellerId, cart, onAdd, onMenuLoaded }: Pro
     }, [sellerId]);
 
     const fetchMenu = async () => {
-        console.log(`[MenuSection] fetching menu for sellerId=${sellerId}`);
-        console.log(`[MenuSection] products URL: ${BASE_URL}/menu/products/${sellerId}`);
+        console.log(`[MenuSection] fetching for sellerId=${sellerId}`);
+        console.log(`[MenuSection] URL: ${API.menuProducts(sellerId)}`);
         try {
             const [prodRes, catRes] = await Promise.all([
-                fetch(`${BASE_URL}/menu/products/${sellerId}`),
-                fetch(`${BASE_URL}/menu/categories/${sellerId}`),
+                fetch(API.menuProducts(sellerId)),
+                fetch(API.menuCategories(sellerId)),
             ]);
-            console.log(`[MenuSection] products status: ${prodRes.status}, categories status: ${catRes.status}`);
+            console.log(`[MenuSection] products=${prodRes.status} categories=${catRes.status}`);
             const prodData = await prodRes.json();
-            const catData = await catRes.json();
-            console.log(`[MenuSection] products response:`, JSON.stringify(prodData).slice(0, 200));
-            console.log(`[MenuSection] categories response:`, JSON.stringify(catData).slice(0, 200));
+            const catData  = await catRes.json();
+            console.log(`[MenuSection] items=${prodData.products?.length ?? 0}`);
             if (prodData.success) {
                 setItems(prodData.products);
                 onMenuLoaded?.(prodData.products);
@@ -46,7 +44,6 @@ export default function MenuSection({ sellerId, cart, onAdd, onMenuLoaded }: Pro
             }
         } catch (e) {
             console.error("[MenuSection] FETCH ERROR:", e);
-            console.error("[MenuSection] URL was:", `${BASE_URL}/menu/products/${sellerId}`);
         } finally {
             setLoading(false);
         }

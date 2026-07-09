@@ -3,67 +3,127 @@ import {
     View, Text, StyleSheet, FlatList, TouchableOpacity,
     ActivityIndicator, RefreshControl,
 } from "react-native";
+import { io, Socket } from "socket.io-client";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import SellerOrderCard, { SellerOrder, OrderStatus } from "./SellerOrderCard";
-import { API } from "../../Extras/api";
+import { API, BASE_URL } from "../../Extras/api";
+import { notifyNewOrder, notifyBillRequested } from "../../features/notification";
 
-const POLL_MS = 15000;
+// Socket connects to the base server URL (no /api)
+const SERVER_URL = BASE_URL.replace("/api", "");
 
 type FilterTab = "active" | "done" | "all";
-
 const FILTER_TABS: { key: FilterTab; label: string }[] = [
     { key: "active", label: "Active" },
     { key: "done",   label: "Done"   },
     { key: "all",    label: "All"    },
 ];
-
 const ACTIVE_STATUSES: OrderStatus[] = ["pending", "confirmed", "preparing", "ready"];
 
 export default function SellerOrdersSection() {
-    const [orders, setOrders] = useState<SellerOrder[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [orders, setOrders]       = useState<SellerOrder[]>([]);
+    const [loading, setLoading]     = useState(true);
     const [refreshing, setRefreshing] = useState(false);
-    const [filter, setFilter] = useState<FilterTab>("active");
-    const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const [connected, setConnected] = useState(false);
+    const [filter, setFilter]       = useState<FilterTab>("active");
+    const socketRef = useRef<Socket | null>(null);
 
+    // ── Initial REST fetch ─────────────────────────────────────────────────────
     const fetchOrders = useCallback(async (silent = false) => {
-        console.log(`[SellerOrders] fetchOrders called — silent=${silent}`);
-        console.log(`[SellerOrders] hitting URL: ${API.sellerOrders}`);
+        console.log(`[SellerOrders] REST fetch — silent=${silent}, url=${API.sellerOrders}`);
         if (!silent) setRefreshing(true);
         try {
-            console.log("[SellerOrders] sending fetch...");
             const res = await fetch(API.sellerOrders, { credentials: "include" });
-            console.log(`[SellerOrders] response status: ${res.status}`);
+            console.log(`[SellerOrders] REST status: ${res.status}`);
             const data = await res.json();
-            console.log("[SellerOrders] response body:", JSON.stringify(data).slice(0, 300));
             if (data.success) {
-                console.log(`[SellerOrders] got ${data.orders.length} orders`);
+                console.log(`[SellerOrders] loaded ${data.orders.length} orders`);
                 setOrders(data.orders);
             } else {
-                console.warn("[SellerOrders] success=false:", data.message);
+                console.warn("[SellerOrders] REST failed:", data.message);
             }
         } catch (e) {
-            console.error("[SellerOrders] FETCH ERROR:", e);
-            console.error("[SellerOrders] URL was:", API.sellerOrders);
+            console.error("[SellerOrders] REST error:", e);
         } finally {
             setLoading(false);
             setRefreshing(false);
         }
     }, []);
 
+    // ── Socket setup ───────────────────────────────────────────────────────────
     useEffect(() => {
-        console.log("[SellerOrders] component mounted, starting initial fetch + poll");
-        fetchOrders(false);
-        pollRef.current = setInterval(() => fetchOrders(true), POLL_MS);
+        let sellerId: string | null = null;
+
+        const setup = async () => {
+            // Get sellerId from session
+            try {
+                const raw = await AsyncStorage.getItem("session");
+                if (raw) sellerId = JSON.parse(raw)?.sellerId ?? JSON.parse(raw)?._id ?? null;
+            } catch {}
+
+            // Initial data load
+            await fetchOrders(false);
+
+            console.log(`[SellerOrders] connecting socket to ${SERVER_URL}`);
+            const socket = io(SERVER_URL, {
+                transports: ["polling", "websocket"],
+                reconnection: true,
+                reconnectionAttempts: Infinity,
+                reconnectionDelay: 2000,
+                timeout: 10000,
+            });
+            socketRef.current = socket;
+
+            socket.on("connect", () => {
+                console.log("[SellerOrders] socket connected:", socket.id);
+                setConnected(true);
+                if (sellerId) {
+                    socket.emit("join:seller", { sellerId });
+                    console.log(`[SellerOrders] joined seller room: ${sellerId}`);
+                }
+            });
+
+            // New order pushed by backend after a customer places one
+            socket.on("order:new", (order: SellerOrder) => {
+                console.log("[SellerOrders] socket order:new received:", order._id);
+                setOrders(prev => [order, ...prev]);
+                notifyNewOrder(order.tableName ?? "A table", order.total);
+            });
+
+            // Bill requested by customer
+            socket.on("order:bill", ({ tableName }: { tableName: string }) => {
+                console.log("[SellerOrders] bill requested from:", tableName);
+                notifyBillRequested(tableName ?? "A table");
+            });
+
+            // Status change pushed by backend after seller updates
+            socket.on("order:status", ({ orderId, status }: { orderId: string; status: OrderStatus }) => {
+                console.log(`[SellerOrders] socket order:status — ${orderId} → ${status}`);
+                setOrders(prev => prev.map(o => o._id === orderId ? { ...o, status } : o));
+            });
+
+            socket.on("disconnect", (reason) => {
+                console.warn("[SellerOrders] socket disconnected:", reason);
+                setConnected(false);
+            });
+
+            socket.on("connect_error", (err) => {
+                console.error("[SellerOrders] socket connect_error:", err.message);
+            });
+        };
+
+        setup();
+
         return () => {
-            console.log("[SellerOrders] component unmounted, clearing poll");
-            if (pollRef.current) clearInterval(pollRef.current);
+            console.log("[SellerOrders] cleanup — disconnecting socket");
+            socketRef.current?.disconnect();
         };
     }, [fetchOrders]);
 
+    // ── Status update ──────────────────────────────────────────────────────────
     const handleStatusChange = useCallback(async (orderId: string, newStatus: OrderStatus) => {
         const url = API.updateOrderStatus(orderId);
-        console.log(`[SellerOrders] updating order ${orderId} → ${newStatus}`);
-        console.log(`[SellerOrders] PATCH URL: ${url}`);
+        console.log(`[SellerOrders] PATCH ${url} → ${newStatus}`);
         try {
             const res = await fetch(url, {
                 method: "PATCH",
@@ -71,27 +131,24 @@ export default function SellerOrdersSection() {
                 credentials: "include",
                 body: JSON.stringify({ status: newStatus }),
             });
-            console.log(`[SellerOrders] status update response: ${res.status}`);
             const data = await res.json();
-            console.log("[SellerOrders] status update body:", JSON.stringify(data));
             if (data.success) {
-                setOrders(prev =>
-                    prev.map(o => o._id === orderId ? { ...o, status: newStatus } : o)
-                );
+                // Optimistic update — socket echo will confirm
+                setOrders(prev => prev.map(o => o._id === orderId ? { ...o, status: newStatus } : o));
             } else {
                 console.warn("[SellerOrders] status update failed:", data.message);
             }
         } catch (e) {
-            console.error("[SellerOrders] STATUS UPDATE ERROR:", e);
+            console.error("[SellerOrders] status update error:", e);
         }
     }, []);
 
+    // ── Filter ─────────────────────────────────────────────────────────────────
     const filtered = orders.filter(o => {
         if (filter === "active") return ACTIVE_STATUSES.includes(o.status);
         if (filter === "done")   return o.status === "done";
         return true;
     });
-
     const activeCount = orders.filter(o => ACTIVE_STATUSES.includes(o.status)).length;
 
     if (loading) {
@@ -104,6 +161,13 @@ export default function SellerOrdersSection() {
 
     return (
         <View style={styles.wrapper}>
+            {/* Live indicator */}
+            <View style={styles.liveRow}>
+                <View style={[styles.liveDot, connected ? styles.liveDotOn : styles.liveDotOff]} />
+                <Text style={styles.liveText}>{connected ? "Live" : "Reconnecting..."}</Text>
+            </View>
+
+            {/* Filter tabs */}
             <View style={styles.tabRow}>
                 {FILTER_TABS.map(tab => (
                     <TouchableOpacity
@@ -141,7 +205,7 @@ export default function SellerOrdersSection() {
                     <View style={styles.empty}>
                         <Text style={styles.emptyTitle}>No orders here</Text>
                         <Text style={styles.emptyHint}>
-                            {filter === "active" ? "New orders will appear here" : "No completed orders yet"}
+                            {filter === "active" ? "New orders will appear instantly" : "No completed orders yet"}
                         </Text>
                     </View>
                 }
@@ -153,59 +217,41 @@ export default function SellerOrdersSection() {
     );
 }
 
-// ── Styles ────────────────────────────────────────────────────────────────────
-
 const styles = StyleSheet.create({
     wrapper: { flex: 1 },
     centered: { flex: 1, alignItems: "center", justifyContent: "center" },
 
+    liveRow: {
+        flexDirection: "row", alignItems: "center",
+        paddingHorizontal: 14, paddingTop: 10, gap: 6,
+    },
+    liveDot: { width: 8, height: 8, borderRadius: 4 },
+    liveDotOn:  { backgroundColor: "#16A34A" },
+    liveDotOff: { backgroundColor: "#EF4444" },
+    liveText: { fontSize: 12, fontWeight: "600", color: "#6B7280" },
+
     tabRow: {
         flexDirection: "row",
-        paddingHorizontal: 12,
-        paddingTop: 10,
-        paddingBottom: 4,
+        paddingHorizontal: 12, paddingTop: 8, paddingBottom: 4,
         gap: 8,
     },
     tab: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 14,
-        paddingVertical: 7,
-        borderRadius: 20,
-        backgroundColor: "#F3F4F6",
-        borderWidth: 1,
-        borderColor: "#E5E7EB",
-        gap: 5,
+        flexDirection: "row", alignItems: "center",
+        paddingHorizontal: 14, paddingVertical: 7,
+        borderRadius: 20, backgroundColor: "#F3F4F6",
+        borderWidth: 1, borderColor: "#E5E7EB", gap: 5,
     },
-    tabActive: {
-        backgroundColor: "#6C63FF",
-        borderColor: "#6C63FF",
-    },
-    tabText: {
-        fontSize: 13,
-        fontWeight: "600",
-        color: "#6B7280",
-    },
-    tabTextActive: {
-        color: "#fff",
-    },
+    tabActive: { backgroundColor: "#6C63FF", borderColor: "#6C63FF" },
+    tabText: { fontSize: 13, fontWeight: "600", color: "#6B7280" },
+    tabTextActive: { color: "#fff" },
     countBadge: {
-        backgroundColor: "#EF4444",
-        borderRadius: 8,
-        minWidth: 18,
-        height: 18,
-        alignItems: "center",
-        justifyContent: "center",
-        paddingHorizontal: 4,
+        backgroundColor: "#EF4444", borderRadius: 8,
+        minWidth: 18, height: 18,
+        alignItems: "center", justifyContent: "center", paddingHorizontal: 4,
     },
-    countText: {
-        color: "#fff",
-        fontSize: 10,
-        fontWeight: "700",
-    },
+    countText: { color: "#fff", fontSize: 10, fontWeight: "700" },
 
     listContent: { paddingHorizontal: 12, paddingTop: 8, paddingBottom: 100 },
-
     empty: { alignItems: "center", marginTop: 60, gap: 8 },
     emptyTitle: { fontSize: 16, fontWeight: "600", color: "#374151" },
     emptyHint: { fontSize: 13, color: "#9CA3AF" },

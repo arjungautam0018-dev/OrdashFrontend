@@ -77,7 +77,7 @@ export default function SellerOrderCard({ order, onStatusChange }: Props) {
     };
 
     return (
-        <View style={styles.card}>
+        <View style={[styles.card, { borderColor: cfg.border, borderLeftWidth: 4, borderLeftColor: cfg.border }]}>
             {/* ── Header row ── */}
             <TouchableOpacity
                 style={styles.header}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   View, Text, TextInput, TouchableOpacity,
   ScrollView, Alert, ActivityIndicator,
+  KeyboardAvoidingView, Platform,
 } from "react-native";
 import { shared, C } from "./styles";
 import BrandLogo from "./BrandLogo";
@@ -77,7 +78,10 @@ export default function SignupSeller() {
   }
 
   return (
-    <View style={shared.screen}>
+    <KeyboardAvoidingView
+      style={shared.screen}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <ScrollView contentContainerStyle={shared.scroll} keyboardShouldPersistTaps="handled">
         <BrandLogo subtitle="Seller portal — list your restaurant & start earning" topOffset={48} />
 
@@ -184,6 +188,6 @@ export default function SignupSeller() {
           </Text>
         </TouchableOpacity>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

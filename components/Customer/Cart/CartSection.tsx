@@ -5,8 +5,7 @@ import {
 } from "react-native";
 import CartCard from "./CartCard";
 import { MenuItem } from "../Menu/MenuCard";
-
-const BASE_URL = "http://10.120.18.143:3000/api";
+import { API } from "../../../Extras/api";
 
 interface Props {
     sellerId: string;
@@ -28,7 +27,7 @@ export default function CartSection({ sellerId, tableId, cart, menuItems, onIncr
         if (cartItems.length === 0) return;
         setLoading(true);
         console.log(`[CartSection] placing order — sellerId=${sellerId}, tableId=${tableId}`);
-        console.log(`[CartSection] URL: ${BASE_URL}/order/place`);
+        console.log(`[CartSection] URL: ${API.placeOrder}`);
         console.log(`[CartSection] items:`, JSON.stringify(cartItems.map(i => ({ name: i.name, qty: cart[i._id] }))));
         try {
             const items = cartItems.map(i => ({
@@ -37,7 +36,7 @@ export default function CartSection({ sellerId, tableId, cart, menuItems, onIncr
                 price: i.price,
                 quantity: cart[i._id],
             }));
-            const res = await fetch(`${BASE_URL}/order/place`, {
+            const res = await fetch(API.placeOrder, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ sellerId, tableId, items, total }),

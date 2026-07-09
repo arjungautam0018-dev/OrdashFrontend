@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
     StyleSheet, Text, View, TouchableOpacity,
     TextInput, ScrollView, Modal, FlatList, ActivityIndicator, Alert, Image,
+    KeyboardAvoidingView, Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -205,6 +206,10 @@ export default function AddStockScreen() {
     };
 
     return (
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
         <SafeAreaView style={styles.screen} edges={["top", "bottom"]}>
             <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
 
@@ -431,6 +436,7 @@ export default function AddStockScreen() {
             </Modal>
 
         </SafeAreaView>
+        </KeyboardAvoidingView>
     );
 }
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
     Modal, View, Text, TextInput, TouchableOpacity,
-    StyleSheet, ActivityIndicator, Alert,
+    StyleSheet, ActivityIndicator, Alert, KeyboardAvoidingView, Platform,
 } from "react-native";
 import { API } from "../../Extras/api";
 import { TableItem } from "./tableCard";
@@ -98,6 +98,10 @@ export default function EditTablePopup({ table, onClose, onSaved, onDeleted }: P
     return (
         <Modal visible={!!table} transparent animationType="slide" onRequestClose={onClose}>
             <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={onClose} />
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.kavContainer}
+            >
             <View style={styles.sheet}>
                 <View style={styles.handle} />
                 <Text style={styles.sheetTitle}>Edit Table</Text>
@@ -136,6 +140,7 @@ export default function EditTablePopup({ table, onClose, onSaved, onDeleted }: P
                     </TouchableOpacity>
                 </View>
             </View>
+            </KeyboardAvoidingView>
         </Modal>
     );
 }
@@ -145,8 +150,10 @@ const styles = StyleSheet.create({
         position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
         backgroundColor: "rgba(0,0,0,0.4)",
     },
-    sheet: {
+    kavContainer: {
         position: "absolute", bottom: 0, left: 0, right: 0,
+    },
+    sheet: {
         backgroundColor: "#fff",
         borderTopLeftRadius: 20, borderTopRightRadius: 20,
         paddingHorizontal: 20, paddingBottom: 36, paddingTop: 12,

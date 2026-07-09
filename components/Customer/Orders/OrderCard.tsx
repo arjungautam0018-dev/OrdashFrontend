@@ -24,7 +24,7 @@ export default function OrderCard({ order }: Props) {
     const time = new Date(order.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
     return (
-        <View style={styles.card}>
+        <View style={[styles.card, { borderColor: s.border, borderLeftWidth: 4, borderLeftColor: s.border }]}>
             <View style={styles.header}>
                 <Text style={styles.time}>{time}</Text>
                 <View style={[styles.badge, { backgroundColor: s.bg, borderColor: s.border }]}>
