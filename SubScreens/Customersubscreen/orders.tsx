@@ -28,7 +28,7 @@ export default function OrdersScreen({ sellerId, tableId }: Props) {
             const data = await res.json();
             if (data.success) setOrders(data.orders);
         } catch (e) {
-            console.error("[CustomerOrders] fetch error:", e);
+            if (__DEV__) console.error("[CustomerOrders] fetch error:", e);
         } finally {
             setLoading(false);
         }
@@ -39,7 +39,7 @@ export default function OrdersScreen({ sellerId, tableId }: Props) {
         fetchOrders();
 
         const socket = io(SERVER_URL, {
-            transports: ["polling", "websocket"],
+            transports: ["websocket"],
             reconnection: true,
             reconnectionAttempts: Infinity,
             reconnectionDelay: 2000,
@@ -48,11 +48,9 @@ export default function OrdersScreen({ sellerId, tableId }: Props) {
 
         socket.on("connect", () => {
             socket.emit("join:table", { sellerId, tableId });
-            console.log(`[CustomerOrders] joined table room ${sellerId}:${tableId}`);
         });
 
         socket.on("order:status", ({ orderId, status }: { orderId: string; status: OrderItem["status"] }) => {
-            console.log(`[CustomerOrders] order:status — ${orderId} → ${status}`);
             setOrders(prev => prev.map(o => {
                 if (o._id !== orderId) return o;
                 // Fire notification on meaningful status transitions
@@ -63,7 +61,7 @@ export default function OrdersScreen({ sellerId, tableId }: Props) {
         });
 
         socket.on("disconnect", () => {
-            console.log("[CustomerOrders] socket disconnected");
+            if (__DEV__) console.log("[CustomerOrders] socket disconnected");
         });
 
         return () => {

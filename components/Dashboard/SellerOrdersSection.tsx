@@ -30,20 +30,18 @@ export default function SellerOrdersSection() {
 
     // ── Initial REST fetch ─────────────────────────────────────────────────────
     const fetchOrders = useCallback(async (silent = false) => {
-        console.log(`[SellerOrders] REST fetch — silent=${silent}, url=${API.sellerOrders}`);
+        if (__DEV__) console.log(`[SellerOrders] REST fetch — silent=${silent}`);
         if (!silent) setRefreshing(true);
         try {
             const res = await fetch(API.sellerOrders, { credentials: "include" });
-            console.log(`[SellerOrders] REST status: ${res.status}`);
             const data = await res.json();
             if (data.success) {
-                console.log(`[SellerOrders] loaded ${data.orders.length} orders`);
                 setOrders(data.orders);
             } else {
-                console.warn("[SellerOrders] REST failed:", data.message);
+                if (__DEV__) console.warn("[SellerOrders] REST failed:", data.message);
             }
         } catch (e) {
-            console.error("[SellerOrders] REST error:", e);
+            if (__DEV__) console.error("[SellerOrders] REST error:", e);
         } finally {
             setLoading(false);
             setRefreshing(false);
@@ -64,9 +62,9 @@ export default function SellerOrdersSection() {
             // Initial data load
             await fetchOrders(false);
 
-            console.log(`[SellerOrders] connecting socket to ${SERVER_URL}`);
+            if (__DEV__) console.log(`[SellerOrders] connecting socket to ${SERVER_URL}`);
             const socket = io(SERVER_URL, {
-                transports: ["polling", "websocket"],
+                transports: ["websocket"],
                 reconnection: true,
                 reconnectionAttempts: Infinity,
                 reconnectionDelay: 2000,
@@ -75,57 +73,48 @@ export default function SellerOrdersSection() {
             socketRef.current = socket;
 
             socket.on("connect", () => {
-                console.log("[SellerOrders] socket connected:", socket.id);
+                if (__DEV__) console.log("[SellerOrders] socket connected:", socket.id);
                 setConnected(true);
                 if (sellerId) {
                     socket.emit("join:seller", { sellerId });
-                    console.log(`[SellerOrders] joined seller room: ${sellerId}`);
                 }
             });
 
-            // New order pushed by backend after a customer places one
             socket.on("order:new", (order: SellerOrder) => {
-                console.log("[SellerOrders] socket order:new received:", order._id);
+                if (__DEV__) console.log("[SellerOrders] order:new:", order._id);
                 setOrders(prev => [order, ...prev]);
                 notifyNewOrder(order.tableName ?? "A table", order.total);
             });
 
-            // Bill requested by customer
             socket.on("order:bill", ({ tableName }: { tableName: string }) => {
-                console.log("[SellerOrders] bill requested from:", tableName);
                 notifyBillRequested(tableName ?? "A table");
             });
 
-            // Status change pushed by backend after seller updates
             socket.on("order:status", ({ orderId, status }: { orderId: string; status: OrderStatus }) => {
-                console.log(`[SellerOrders] socket order:status — ${orderId} → ${status}`);
                 setOrders(prev => prev.map(o => o._id === orderId ? { ...o, status } : o));
             });
 
             socket.on("disconnect", (reason) => {
-                console.warn("[SellerOrders] socket disconnected:", reason);
+                if (__DEV__) console.warn("[SellerOrders] socket disconnected:", reason);
                 setConnected(false);
             });
 
             socket.on("connect_error", (err) => {
-                console.error("[SellerOrders] socket connect_error:", err.message);
+                if (__DEV__) console.error("[SellerOrders] socket connect_error:", err.message);
             });
         };
 
         setup();
 
         return () => {
-            console.log("[SellerOrders] cleanup — disconnecting socket");
             socketRef.current?.disconnect();
         };
     }, [fetchOrders]);
 
     // ── Status update ──────────────────────────────────────────────────────────
     const handleStatusChange = useCallback(async (orderId: string, newStatus: OrderStatus) => {
-        const url = API.updateOrderStatus(orderId);
-        console.log(`[SellerOrders] PATCH ${url} → ${newStatus}`);
         try {
-            const res = await fetch(url, {
+            const res = await fetch(API.updateOrderStatus(orderId), {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -133,13 +122,12 @@ export default function SellerOrdersSection() {
             });
             const data = await res.json();
             if (data.success) {
-                // Optimistic update — socket echo will confirm
                 setOrders(prev => prev.map(o => o._id === orderId ? { ...o, status: newStatus } : o));
             } else {
-                console.warn("[SellerOrders] status update failed:", data.message);
+                if (__DEV__) console.warn("[SellerOrders] status update failed:", data.message);
             }
         } catch (e) {
-            console.error("[SellerOrders] status update error:", e);
+            if (__DEV__) console.error("[SellerOrders] status update error:", e);
         }
     }, []);
 

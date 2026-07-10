@@ -52,29 +52,27 @@ export default function LoginSeller() {
       const res = await fetch(API.sellerLogin, {
         method:"POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",                       // required — stores the session cookie
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      console.log("Login response:", res.status, data);
+      if (__DEV__) console.log("Login response:", res.status, data);
       if (res.ok) {
-        // fetch profile to get seller details
-        const profileRes = await fetch(API.sellerProfile, { credentials: 'include' });
-        const profileData = await profileRes.json();
+        // use seller data from login response directly — avoids a second cookie-dependent request
+        const seller = data.seller;
         await AsyncStorage.setItem('session', JSON.stringify({
-          sellerId: profileData.seller.id,
-          shopName: profileData.seller.shopName,
-          sellerName: profileData.seller.name,
-          email: profileData.seller.email,
+          sellerId: seller.sellerId,   // backend returns sellerId (seller._id aliased)
+          shopName: seller.shopName,
+          sellerName: seller.name,
+          savedAt: Date.now(),
         }));
-
-        
         navigation.navigate("DashboardSeller");
       } else {
         setError(data.message || "Invalid email or password.");
       }
     }
     catch(e: any){
-      console.log("Login error:", e.message);
+      if (__DEV__) console.log("Login error:", e.message);
       setError("Could not reach server. Check your connection.");
     }
     finally{

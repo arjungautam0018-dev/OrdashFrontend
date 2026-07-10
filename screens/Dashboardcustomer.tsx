@@ -82,15 +82,13 @@ export default function DashboardCustomer({ route }: Props) {
     // Fetch menu eagerly on mount so Cart tab always has item data
     useEffect(() => {
         const loadMenu = async () => {
-            console.log(`[DashboardCustomer] eager menu fetch for sellerId=${sellerId}`);
+            if (__DEV__) console.log(`[DashboardCustomer] eager menu fetch for sellerId=${sellerId}`);
             try {
                 const res = await fetch(API.menuProducts(sellerId));
-                console.log(`[DashboardCustomer] menu fetch status: ${res.status}`);
                 const data = await res.json();
-                console.log(`[DashboardCustomer] menu items count: ${data.products?.length ?? 0}`);
                 if (data.success) setMenuItems(data.products);
             } catch (e) {
-                console.error("[DashboardCustomer] menu fetch error:", e);
+                if (__DEV__) console.error("[DashboardCustomer] menu fetch error:", e);
             }
         };
         loadMenu();

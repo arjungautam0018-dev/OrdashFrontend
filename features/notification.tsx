@@ -1,11 +1,13 @@
 import * as Notifications from "expo-notifications";
+import { SchedulableTriggerInputTypes } from "expo-notifications";
 import { Alert } from "react-native";
 
 // ── Handler — call once at app startup ───────────────────────────────────────
 export function setupNotificationHandler() {
     Notifications.setNotificationHandler({
         handleNotification: async () => ({
-            shouldShowAlert: true,
+            shouldShowBanner: true,
+            shouldShowList: true,
             shouldPlaySound: true,
             shouldSetBadge: true,
         }),
@@ -28,8 +30,19 @@ export async function sendNotification(title: string, body: string): Promise<voi
     if (!ok) return;
     await Notifications.scheduleNotificationAsync({
         content: { title, body, sound: true },
-        trigger: null,
+        trigger: {
+            type: SchedulableTriggerInputTypes.TIME_INTERVAL,
+            seconds: 1,
+        },
     });
+}
+
+// ── Customer: order placed successfully ──────────────────────────────────────
+export async function notifyOrderPlaced(): Promise<void> {
+    await sendNotification(
+        "🛒 Order Placed!",
+        "Your order has been received. We'll notify you when it's ready."
+    );
 }
 
 // ── Seller: new order arrived ─────────────────────────────────────────────────

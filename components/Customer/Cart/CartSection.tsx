@@ -6,6 +6,7 @@ import {
 import CartCard from "./CartCard";
 import { MenuItem } from "../Menu/MenuCard";
 import { API } from "../../../Extras/api";
+import { notifyOrderPlaced } from "../../../features/notification";
 
 interface Props {
     sellerId: string;
@@ -26,9 +27,7 @@ export default function CartSection({ sellerId, tableId, cart, menuItems, onIncr
     const handlePlaceOrder = async () => {
         if (cartItems.length === 0) return;
         setLoading(true);
-        console.log(`[CartSection] placing order — sellerId=${sellerId}, tableId=${tableId}`);
-        console.log(`[CartSection] URL: ${API.placeOrder}`);
-        console.log(`[CartSection] items:`, JSON.stringify(cartItems.map(i => ({ name: i.name, qty: cart[i._id] }))));
+        if (__DEV__) console.log(`[CartSection] placing order — sellerId=${sellerId}, tableId=${tableId}`);
         try {
             const items = cartItems.map(i => ({
                 productId: i._id,
@@ -36,23 +35,22 @@ export default function CartSection({ sellerId, tableId, cart, menuItems, onIncr
                 price: i.price,
                 quantity: cart[i._id],
             }));
+            // total is NOT sent — backend must recalculate from prices in DB
             const res = await fetch(API.placeOrder, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ sellerId, tableId, items, total }),
+                body: JSON.stringify({ sellerId, tableId, items }),
             });
-            console.log(`[CartSection] place order response status: ${res.status}`);
+            if (__DEV__) console.log(`[CartSection] place order response status: ${res.status}`);
             const data = await res.json();
-            console.log("[CartSection] place order response:", JSON.stringify(data));
             if (data.success) {
-                console.log("[CartSection] order placed successfully");
+                notifyOrderPlaced();
                 onOrderPlaced();
             } else {
-                console.warn("[CartSection] order failed:", data.message);
                 Alert.alert("Error", data.message);
             }
         } catch (e) {
-            console.error("[CartSection] NETWORK ERROR:", e);
+            if (__DEV__) console.error("[CartSection] NETWORK ERROR:", e);
             Alert.alert("Error", "Could not place order. Try again.");
         } finally {
             setLoading(false);

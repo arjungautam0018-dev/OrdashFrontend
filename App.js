@@ -16,8 +16,13 @@ import AddStockScreen   from './SubScreens/Sellersubscreen/addstock';
 
 const Stack = createNativeStackNavigator();
 
+// Session is valid for 7 days
+const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // null = still checking, false = not logged in, true = logged in
+  const [sessionChecked, setSessionChecked] = useState(false);
+  const [initialRoute, setInitialRoute] = useState('ChooseRole');
 
   useEffect(() => {
     initializeNotification();
@@ -26,15 +31,29 @@ export default function App() {
 
   const checkSession = async () => {
     try {
-      const session = await AsyncStorage.getItem('session');
-      setIsLoggedIn(!!session);
+      const raw = await AsyncStorage.getItem('session');
+      if (raw) {
+        const session = JSON.parse(raw);
+        const savedAt = session.savedAt ?? 0;
+        const expired = Date.now() - savedAt > SESSION_TTL_MS;
+        if (!expired && session.sellerId) {
+          setInitialRoute('DashboardSeller');
+        } else if (expired) {
+          // Clear expired session
+          await AsyncStorage.removeItem('session');
+        }
+      }
     } catch (e) {}
+    setSessionChecked(true);
   };
+
+  // Don't render navigation until session check is done to avoid flicker
+  if (!sessionChecked) return null;
 
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
           <Stack.Screen name="ChooseRole"       component={CheckUser} />
           <Stack.Screen name="QRScanner"        component={ScanQr} />
           <Stack.Screen name="SellerSignup"     component={SignupSeller} />
