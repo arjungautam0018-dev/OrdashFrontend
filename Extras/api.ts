@@ -1,5 +1,5 @@
-const BASE_URL = "https://ordashbackend.onrender.com/api";
-
+const BASE_URL1 = "https://ordashbackend.onrender.com/api";
+const BASE_URL = "http://192.168.0.110:3000/api";
 export const API = {
   sellerSignup:    `${BASE_URL}/sellersignup`,
   sellerLogin:     `${BASE_URL}/sellerlogin`,
@@ -35,6 +35,11 @@ export const API = {
   sellerOrders:    `${BASE_URL}/order/seller`,
   updateOrderStatus: (orderId: string) => `${BASE_URL}/order/${orderId}/status`,
   requestBill:       (orderId: string) => `${BASE_URL}/order/${orderId}/bill`,
+
+  // Accounts
+  createAccount:   `${BASE_URL}/account/create`,
+  getAccounts:     `${BASE_URL}/account/all`,
+  
 };
 
 export { BASE_URL };

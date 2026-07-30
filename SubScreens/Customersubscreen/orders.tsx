@@ -6,7 +6,7 @@ import {
 import { io, Socket } from "socket.io-client";
 import OrderCard, { OrderItem } from "../../components/Customer/Orders/OrderCard";
 import { API, BASE_URL } from "../../Extras/api";
-import { notifyOrderReady, notifyOrderDone } from "../../features/notification";
+import { notifyOrderReady, notifyOrderDone, notifyOrderConfirmed, notifyOrderPreparing } from "../../features/notification";
 
 const SERVER_URL = BASE_URL.replace("/api", "");
 
@@ -53,9 +53,10 @@ export default function OrdersScreen({ sellerId, tableId }: Props) {
         socket.on("order:status", ({ orderId, status }: { orderId: string; status: OrderItem["status"] }) => {
             setOrders(prev => prev.map(o => {
                 if (o._id !== orderId) return o;
-                // Fire notification on meaningful status transitions
-                if (status === "ready") notifyOrderReady();
-                if (status === "done")  notifyOrderDone();
+                if (status === "confirmed") notifyOrderConfirmed();
+                if (status === "preparing") notifyOrderPreparing();
+                if (status === "ready")     notifyOrderReady();
+                if (status === "done")      notifyOrderDone();
                 return { ...o, status };
             }));
         });

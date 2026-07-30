@@ -8,6 +8,7 @@ import TableCard, { TableItem } from "./tableCard";
 import EditTablePopup from "./tablePopup";
 import QRPopup from "./QRPopup";
 import { API } from "../../Extras/api";
+import { authFetch } from "../../Extras/authFetch";
 
 export default function TablesSection() {
     const [tables, setTables] = useState<TableItem[]>([]);
@@ -20,7 +21,7 @@ export default function TablesSection() {
     const fetchData = async (showLoader = false) => {
         if (showLoader) setLoading(true);
         try {
-            const res = await fetch(API.getTables, { credentials: "include" });
+            const res = await authFetch(API.getTables);
             const data = await res.json();
             if (data.success) setTables(data.tables);
         } catch (e) {

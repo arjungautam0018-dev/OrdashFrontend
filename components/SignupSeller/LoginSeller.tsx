@@ -52,7 +52,6 @@ export default function LoginSeller() {
       const res = await fetch(API.sellerLogin, {
         method:"POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",                       // required — stores the session cookie
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
@@ -61,9 +60,10 @@ export default function LoginSeller() {
         // use seller data from login response directly — avoids a second cookie-dependent request
         const seller = data.seller;
         await AsyncStorage.setItem('session', JSON.stringify({
-          sellerId: seller.sellerId,   // backend returns sellerId (seller._id aliased)
+          sellerId: seller.sellerId,
           shopName: seller.shopName,
           sellerName: seller.name,
+          token: data.token,           // store JWT for authenticated requests
           savedAt: Date.now(),
         }));
         navigation.navigate("DashboardSeller");

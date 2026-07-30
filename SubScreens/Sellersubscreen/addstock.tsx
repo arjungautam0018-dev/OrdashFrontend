@@ -9,6 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 import Svg, { Path, Rect, Circle } from "react-native-svg";
 import * as ImagePicker from "expo-image-picker";
 import { API } from "../../Extras/api";
+import { authFetch } from "../../Extras/authFetch";
 
 // ── Inline SVG icons ──────────────────────────────────────────────────────────
 
@@ -126,7 +127,7 @@ export default function AddStockScreen() {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await fetch(API.getCategories, { credentials: "include" });
+                const res = await authFetch(API.getCategories);
                 const data = await res.json();
                 if (data.success) {
                     setCategories(data.categories.map((c: { name: string }) => c.name));

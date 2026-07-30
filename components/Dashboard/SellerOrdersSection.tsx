@@ -33,7 +33,11 @@ export default function SellerOrdersSection() {
         if (__DEV__) console.log(`[SellerOrders] REST fetch — silent=${silent}`);
         if (!silent) setRefreshing(true);
         try {
-            const res = await fetch(API.sellerOrders, { credentials: "include" });
+            const raw = await AsyncStorage.getItem("session");
+            const token = raw ? JSON.parse(raw)?.token : null;
+            const res = await fetch(API.sellerOrders, {
+                headers: token ? { Authorization: `Bearer ${token}` } : {},
+            });
             const data = await res.json();
             if (data.success) {
                 setOrders(data.orders);
@@ -114,10 +118,14 @@ export default function SellerOrdersSection() {
     // ── Status update ──────────────────────────────────────────────────────────
     const handleStatusChange = useCallback(async (orderId: string, newStatus: OrderStatus) => {
         try {
+            const raw = await AsyncStorage.getItem("session");
+            const token = raw ? JSON.parse(raw)?.token : null;
             const res = await fetch(API.updateOrderStatus(orderId), {
                 method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
                 body: JSON.stringify({ status: newStatus }),
             });
             const data = await res.json();

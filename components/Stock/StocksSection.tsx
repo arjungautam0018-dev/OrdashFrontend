@@ -7,6 +7,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import StockCard from "./stockCard";
 import EditProductPopup, { Product } from "./popup";
 import { API } from "../../Extras/api";
+import { authFetch } from "../../Extras/authFetch";
 
 export default function StocksSection() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -19,8 +20,8 @@ export default function StocksSection() {
     const fetchData = async () => {
         try {
             const [prodRes, catRes] = await Promise.all([
-                fetch(API.getProducts, { credentials: "include" }),
-                fetch(API.getCategories, { credentials: "include" }),
+                authFetch(API.getProducts),
+                authFetch(API.getCategories),
             ]);
             const prodData = await prodRes.json();
             const catData = await catRes.json();

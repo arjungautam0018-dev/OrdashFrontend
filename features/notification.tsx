@@ -61,6 +61,22 @@ export async function notifyBillRequested(tableName: string): Promise<void> {
     );
 }
 
+// ── Customer: order confirmed by seller ──────────────────────────────────────
+export async function notifyOrderConfirmed(): Promise<void> {
+    await sendNotification(
+        "👍 Order Confirmed",
+        "The restaurant has confirmed your order."
+    );
+}
+
+// ── Customer: order is being prepared ────────────────────────────────────────
+export async function notifyOrderPreparing(): Promise<void> {
+    await sendNotification(
+        "👨‍🍳 Preparing Your Order",
+        "Your order is being prepared. Sit tight!"
+    );
+}
+
 // ── Customer: order is ready ──────────────────────────────────────────────────
 export async function notifyOrderReady(): Promise<void> {
     await sendNotification(

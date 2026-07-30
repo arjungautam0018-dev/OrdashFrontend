@@ -7,6 +7,7 @@ import * as FileSystem from "expo-file-system/legacy";
 import * as MediaLibrary from "expo-media-library";
 import Svg, { Path } from "react-native-svg";
 import { API } from "../../Extras/api";
+import { authFetch } from "../../Extras/authFetch";
 import { TableItem } from "./tableCard";
 
 const DownloadIcon = ({ size = 20, color = "#1a1a1a" }) => (
@@ -53,10 +54,9 @@ export default function QRPopup({ table, onClose, onEdit, onQRGenerated }: Props
         if (!table) return;
         setLoading(true);
         try {
-            const res = await fetch(API.generateQR, {
+            const res = await authFetch(API.generateQR, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                credentials: "include",
                 body: JSON.stringify({ tableId: table._id }),
             });
             const data = await res.json();

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, ActivityIndicator,
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { API } from "../../Extras/api";
+import { authFetch } from "../../Extras/authFetch";
 
 export default function AddTableScreen(){
     const navigation = useNavigation<any>();
@@ -18,10 +19,9 @@ export default function AddTableScreen(){
         }
         setLoading(true);
         try {
-            const res = await fetch(API.addTable, {
+            const res = await authFetch(API.addTable, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                credentials: "include",
                 body: JSON.stringify({ name: tableName.trim(), capacity }),
             });
             const data = await res.json();

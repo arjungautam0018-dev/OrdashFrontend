@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { SettingsIcon } from '../../Extras/icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation, CommonActions } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function TopBar() {
   const navigation = useNavigation<any>();
@@ -19,19 +20,8 @@ export default function TopBar() {
     } catch(e) {}
   };
 
-  const handleLogout = () => {
-    Alert.alert('Log out', 'Are you sure?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Log out', style: 'destructive', onPress: async () => {
-        await AsyncStorage.removeItem('session');
-        const check = await AsyncStorage.getItem('session');
-        console.log('Session after logout:', check); // should be null
-        // walk up to root navigator
-        let root: any = navigation;
-        while (root.getParent()) root = root.getParent();
-        root.reset({ index: 0, routes: [{ name: 'ChooseRole' }] });
-      }},
-    ]);
+  const handleSettings = () => {
+    navigation.navigate("SellerSettings");
   };
 
   return (
@@ -56,7 +46,7 @@ export default function TopBar() {
         {/* Settings - Now Clickable */}
         <TouchableOpacity 
           style={styles.settingsButton} 
-          onPress={handleLogout}
+          onPress={handleSettings}
         >
           <SettingsIcon size={20} color="#FFFFFF" />
         </TouchableOpacity>

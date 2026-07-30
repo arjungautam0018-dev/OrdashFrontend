@@ -4,6 +4,7 @@ import {
     StyleSheet, ActivityIndicator, Alert, KeyboardAvoidingView, Platform,
 } from "react-native";
 import { API } from "../../Extras/api";
+import { authFetch } from "../../Extras/authFetch";
 import { TableItem } from "./tableCard";
 
 interface Props {
@@ -39,10 +40,9 @@ export default function EditTablePopup({ table, onClose, onSaved, onDeleted }: P
         }
         setSaving(true);
         try {
-            const res = await fetch(API.updateTable(table._id), {
+            const res = await authFetch(API.updateTable(table._id), {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                credentials: "include",
                 body: JSON.stringify({ name: name.trim(), capacity: cap }),
             });
             const data = await res.json();
@@ -73,9 +73,8 @@ export default function EditTablePopup({ table, onClose, onSaved, onDeleted }: P
                     onPress: async () => {
                         setDeleting(true);
                         try {
-                            const res = await fetch(API.deleteTable(tableId), {
+                            const res = await authFetch(API.deleteTable(tableId), {
                                 method: "DELETE",
-                                credentials: "include",
                             });
                             const data = await res.json();
                             if (data.success) {

@@ -4,6 +4,7 @@ import {
     StyleSheet, ActivityIndicator, Alert, KeyboardAvoidingView, Platform,
 } from "react-native";
 import { API } from "../../Extras/api";
+import { authFetch } from "../../Extras/authFetch";
 
 export interface Product {
     _id: string;
@@ -55,9 +56,8 @@ export default function EditProductPopup({ product, onClose, onSaved, onDeleted 
             if (product.type === "product" && qty !== "") {
                 formData.append("quantity", qty);
             }
-            const res = await fetch(API.updateProduct(product._id), {
+            const res = await authFetch(API.updateProduct(product._id), {
                 method: "PUT",
-                credentials: "include",
                 body: formData,
             });
             const data = await res.json();
@@ -89,9 +89,8 @@ export default function EditProductPopup({ product, onClose, onSaved, onDeleted 
                     onPress: async () => {
                         setDeleting(true);
                         try {
-                            const res = await fetch(API.deleteProduct(productId), {
+                            const res = await authFetch(API.deleteProduct(productId), {
                                 method: "DELETE",
-                                credentials: "include",
                             });
                             const data = await res.json();
                             if (data.success) {

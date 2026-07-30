@@ -18,9 +18,9 @@ export default function PopupLogin({ visible, onClose, navigation }: Props) {
   const handleSelect = (role: "seller" | "customer") => {
     onClose();
     if (role === "seller") {
-      navigation.navigate("SellerLogin"); // replace with your actual route name
+      navigation.navigate("SellerLogin");
     } else {
-      navigation.navigate("CustomerLogin"); // replace with your actual route name
+      navigation.navigate("QRScanner"); // customers scan QR to access menu
     }
   };
 
