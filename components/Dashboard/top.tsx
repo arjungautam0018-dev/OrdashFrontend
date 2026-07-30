@@ -6,22 +6,39 @@ import { SettingsIcon } from '../../Extras/icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
+const LogoutIcon = ({ size = 20, color = "#fff" }: { size?: number; color?: string }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"
+      stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+  </Svg>
+);
+
 
 export default function TopBar() {
   const navigation = useNavigation<any>();
-  const [shopName,setShopName] = useState("Grand Palace Hotel");
+  const [shopName, setShopName] = useState("Grand Palace Hotel");
+  const [isAdmin, setIsAdmin] = useState(true);
 
-  useEffect(()=>{ fetchShopName(); },[]);
+  useEffect(() => { fetchShopName(); }, []);
 
-  const fetchShopName = async() => {
+  const fetchShopName = async () => {
     try {
       const session = await AsyncStorage.getItem('session');
-      if(session) setShopName(JSON.parse(session).shopName);
-    } catch(e) {}
+      if (session) {
+        const parsed = JSON.parse(session);
+        setShopName(parsed.shopName);
+        setIsAdmin(parsed.type !== 'sub');
+      }
+    } catch (e) {}
   };
 
   const handleSettings = () => {
     navigation.navigate("SellerSettings");
+  };
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('session');
+    navigation.reset({ index: 0, routes: [{ name: 'SellerLogin' }] });
   };
 
   return (
@@ -42,14 +59,17 @@ export default function TopBar() {
         {/* Center title */}
         <Text style={styles.hotelName} numberOfLines={1}>{shopName}</Text>
 
-        {/* Settings */}
-        {/* Settings - Now Clickable */}
-        <TouchableOpacity 
-          style={styles.settingsButton} 
-          onPress={handleSettings}
-        >
-          <SettingsIcon size={20} color="#FFFFFF" />
-        </TouchableOpacity>
+        
+        {/* Settings / Logout based on account type */}
+        {isAdmin ? (
+          <TouchableOpacity style={styles.settingsButton} onPress={handleSettings}>
+            <SettingsIcon size={20} color="#FFFFFF" />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.settingsButton} onPress={handleLogout}>
+            <LogoutIcon size={20} color="#FFFFFF" />
+          </TouchableOpacity>
+        )}
 
       </View>
     </SafeAreaView>

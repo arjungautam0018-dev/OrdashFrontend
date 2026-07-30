@@ -34,41 +34,52 @@ export default function LoginSeller() {
   ];
 
   const [form , setForm ] = useState({
-    email:"" , password:""
+    identifier:"" , password:""
   });
 
   async function handleSubmit(){
     setError("");
-    const{email,password} = form;
-    if(!email || !password){
+    const { identifier, password } = form;
+    if (!identifier || !password){
       return setError("Please fill in all the required fields");
     }
-    if (password.length < 8)
-      return setError("Password must be at least 8 characters.");
 
     setLoading(true);
+
+    // Determine if admin (email) or sub-account (phone or email)
+    const isEmail = identifier.includes("@");
+    const body: any = { password };
+    if (isEmail) {
+      // could be admin or sub-account with email — backend checks admin first
+      body.email = identifier;
+    } else {
+      // phone number — must be sub-account
+      body.phone = identifier;
+    }
 
     try{
       const res = await fetch(API.sellerLogin, {
         method:"POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (__DEV__) console.log("Login response:", res.status, data);
       if (res.ok) {
-        // use seller data from login response directly — avoids a second cookie-dependent request
         const seller = data.seller;
         await AsyncStorage.setItem('session', JSON.stringify({
           sellerId: seller.sellerId,
           shopName: seller.shopName,
           sellerName: seller.name,
-          token: data.token,           // store JWT for authenticated requests
+          token: data.token,
+          type: seller.type,                          // "admin" | "sub"
+          ...(seller.cid  && { cid:  seller.cid }),   // sub-account id
+          ...(seller.role && { role: seller.role }),  // waiter / chef / etc.
           savedAt: Date.now(),
         }));
         navigation.navigate("DashboardSeller");
       } else {
-        setError(data.message || "Invalid email or password.");
+        setError(data.message || "Invalid credentials.");
       }
     }
     catch(e: any){
@@ -91,12 +102,12 @@ export default function LoginSeller() {
           <Text style={shared.cardTitle}>Welcome back</Text>
           <Text style={shared.cardSub}>Log in to your seller account</Text>
 
-          <Field label="Email address" required>
-            <TextInput style={inp("email")} placeholder="you@example.com"
-              keyboardType="email-address" autoCapitalize="none"
+          <Field label="Email or phone number" required>
+            <TextInput style={inp("identifier")} placeholder="Email or phone number"
+              autoCapitalize="none"
               placeholderTextColor={C.placeholder}
-              value={form.email} onChangeText={set("email")}
-              onFocus={() => setFocused("email")} onBlur={() => setFocused(null)} />
+              value={form.identifier} onChangeText={set("identifier")}
+              onFocus={() => setFocused("identifier")} onBlur={() => setFocused(null)} />
           </Field>
 
           <Field label="Password" required>

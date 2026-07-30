@@ -8,7 +8,7 @@ import { API } from "../../Extras/api";
 export default function TopCreateAcc({ onAccountCreated }: { onAccountCreated?: () => void }) {
   const [showPopup, setShowPopup] = useState(false);
 
-  const handleCreateAccount = async (data: { name: string; role: string; password: string }) => {
+  const handleCreateAccount = async (data: { accountName: string; phone: string; email: string; role: string; password: string }) => {
     try {
       const res = await authFetch(API.createAccount, {
         method: "POST",

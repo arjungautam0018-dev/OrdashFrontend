@@ -45,7 +45,7 @@ function DeleteIcon({ size = 18, color = "#e04242" }: { size?: number; color?: s
 
 type Account = {
   id: string;
-  name: string;
+  accountName: string;
   role: string;
 };
 
@@ -74,7 +74,7 @@ export default function SingleAccount({ account, onEdit, onDelete }: Props) {
 
       {/* Info */}
       <View style={styles.info}>
-        <Text style={styles.name} numberOfLines={1}>{account.name}</Text>
+        <Text style={styles.name} numberOfLines={1}>{account.accountName}</Text>
         <View style={[styles.roleBadge, { backgroundColor: roleStyle.bg }]}>
           <Text style={[styles.roleText, { color: roleStyle.text }]}>{account.role}</Text>
         </View>

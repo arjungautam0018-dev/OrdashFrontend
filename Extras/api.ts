@@ -39,6 +39,9 @@ export const API = {
   // Accounts
   createAccount:   `${BASE_URL}/account/create`,
   getAccounts:     `${BASE_URL}/account/all`,
+  deleteAccount:   (accountId: string) => `${BASE_URL}/account/delete/${accountId}`,
+  updateAccount:   (accountId: string) => `${BASE_URL}/account/update/${accountId}`,
+  
   
 };
 

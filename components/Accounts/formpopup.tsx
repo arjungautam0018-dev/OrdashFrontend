@@ -18,17 +18,18 @@ export default function AccountsFormPopup({
   onSubmit,
 }: {
   onClose: () => void;
-  onSubmit: (data: { name: string; role: string; password: string }) => void;
+  onSubmit: (data: { accountName: string; phone: string; email: string; role: string; password: string }) => void;
 }) {
-  const [name, setName] = useState("");
+  const [accountName, setAccountName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const [roleOpen, setRoleOpen] = useState(false);
-  const [password,setPassword] = useState("");
-
+  const [password, setPassword] = useState("");
 
   const handleSubmit = () => {
-    if (!name.trim() || !role || !password) return; // basic validation
-    onSubmit({ name, role, password });
+    if (!accountName.trim() || !role || !password || (!phone.trim() && !email.trim())) return;
+    onSubmit({ accountName, phone, email, role, password });
     onClose();
   };
 
@@ -46,10 +47,35 @@ export default function AccountsFormPopup({
               <Text style={styles.label}>Account Name</Text>
               <TextInput
                 style={styles.input}
-                value={name}
-                onChangeText={setName}
+                value={accountName}
+                onChangeText={setAccountName}
                 placeholder="e.g. John Doe"
                 placeholderTextColor="#999"
+              />
+            </View>
+
+            <View style={styles.field}>
+              <Text style={styles.label}>Phone Number</Text>
+              <TextInput
+                style={styles.input}
+                value={phone}
+                onChangeText={setPhone}
+                placeholder="e.g. 03001234567"
+                placeholderTextColor="#999"
+                keyboardType="phone-pad"
+              />
+            </View>
+
+            <View style={styles.field}>
+              <Text style={styles.label}>Email (optional)</Text>
+              <TextInput
+                style={styles.input}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="e.g. john@example.com"
+                placeholderTextColor="#999"
+                keyboardType="email-address"
+                autoCapitalize="none"
               />
             </View>
 
