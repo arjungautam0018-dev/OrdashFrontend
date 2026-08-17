@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from "react-native";
+import { s, sf } from "../../Extras/responsive";
 
 type Props = {
   accountName: string;
@@ -42,26 +43,26 @@ const styles = StyleSheet.create({
   popup: {
     width: "82%",
     backgroundColor: "#fff",
-    borderRadius: 14,
-    padding: 24,
-    gap: 16,
+    borderRadius: s(14),
+    padding: s(24),
+    gap: s(16),
   },
-  title: { fontSize: 17, fontWeight: "700", color: "#e04242" },
-  message: { fontSize: 14, color: "#444", lineHeight: 20 },
+  title: { fontSize: sf(17), fontWeight: "700", color: "#e04242" },
+  message: { fontSize: sf(14), color: "#444", lineHeight: s(20) },
   name: { fontWeight: "700", color: "#1a1a2e" },
-  actions: { flexDirection: "row", gap: 10, justifyContent: "flex-end" },
+  actions: { flexDirection: "row", gap: s(10), justifyContent: "flex-end" },
   cancelBtn: {
-    paddingVertical: 9,
-    paddingHorizontal: 18,
-    borderRadius: 8,
+    paddingVertical: s(9),
+    paddingHorizontal: s(18),
+    borderRadius: s(8),
     backgroundColor: "#f3f4f6",
   },
-  cancelText: { fontSize: 14, fontWeight: "600", color: "#555" },
+  cancelText: { fontSize: sf(14), fontWeight: "600", color: "#555" },
   deleteBtn: {
-    paddingVertical: 9,
-    paddingHorizontal: 18,
-    borderRadius: 8,
+    paddingVertical: s(9),
+    paddingHorizontal: s(18),
+    borderRadius: s(8),
     backgroundColor: "#fee2e2",
   },
-  deleteText: { fontSize: 14, fontWeight: "600", color: "#e04242" },
+  deleteText: { fontSize: sf(14), fontWeight: "600", color: "#e04242" },
 });

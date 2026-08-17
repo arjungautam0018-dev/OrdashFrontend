@@ -3,6 +3,7 @@ import {
     View, Text, StyleSheet, FlatList,
     ActivityIndicator, ScrollView, TouchableOpacity,
 } from "react-native";
+import { s, sf } from "../../../Extras/responsive";
 import MenuCard, { MenuItem } from "./MenuCard";
 import { API } from "../../../Extras/api";
 
@@ -107,18 +108,18 @@ export default function MenuSection({ sellerId, cart, onAdd, onMenuLoaded }: Pro
 
 const styles = StyleSheet.create({
     wrapper: { flex: 1 },
-    centered: { flex: 1, alignItems: "center", justifyContent: "center", marginTop: 60 },
+    centered: { flex: 1, alignItems: "center", justifyContent: "center", marginTop: s(60) },
     filterScroll: { flexGrow: 0 },
-    filterRow: { paddingHorizontal: 12, paddingVertical: 6, gap: 6 },
+    filterRow: { paddingHorizontal: s(12), paddingVertical: s(6), gap: s(6) },
     chip: {
-        width: 80, paddingVertical: 5, borderRadius: 20,
-        backgroundColor: "#F3F4F6", borderWidth: 1, borderColor: "#E5E7EB",
-        alignItems: "center",
+        width: s(80), paddingVertical: s(5), borderRadius: s(20),
+        backgroundColor: "#F3F4F6",
+        borderWidth: 1, borderColor: "#E5E7EB", alignItems: "center",
     },
     chipActive: { backgroundColor: "#0D6E4F", borderColor: "#0D6E4F" },
-    chipText: { fontSize: 12, fontWeight: "600", color: "#6B7280" },
+    chipText: { fontSize: sf(12), fontWeight: "600", color: "#6B7280" },
     chipTextActive: { color: "#fff" },
-    listContent: { paddingHorizontal: 12, paddingTop: 8, paddingBottom: 120 },
-    empty: { alignItems: "center", marginTop: 60 },
-    emptyText: { fontSize: 15, color: "#9CA3AF" },
+    listContent: { paddingHorizontal: s(12), paddingTop: s(8), paddingBottom: s(120) },
+    empty: { alignItems: "center", marginTop: s(60) },
+    emptyText: { fontSize: sf(15), color: "#9CA3AF" },
 });

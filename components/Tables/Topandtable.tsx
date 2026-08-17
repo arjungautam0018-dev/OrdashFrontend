@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { NavOrdersIcon } from "../../Extras/icons";
 import { useNavigation } from "@react-navigation/native";
+import { s, sf } from "../../Extras/responsive";
 
 export default function TopAndTable(){
     const navigation = useNavigation<any>();
@@ -26,19 +27,19 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginTop: 20,
-        marginHorizontal: 12,
-        marginBottom: 4,
+        marginTop: s(20),
+        marginHorizontal: s(12),
+        marginBottom: s(4),
     },
-    text: { fontSize: 22, fontWeight: "600", color: "#1E3A8A" },
+    text: { fontSize: sf(22), fontWeight: "600", color: "#1E3A8A" },
     addTableButton: {
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#F7D060",
-        gap: 6,
-        paddingVertical: 8,
-        paddingHorizontal: 14,
-        borderRadius: 8,
+        gap: s(6),
+        paddingVertical: s(8),
+        paddingHorizontal: s(14),
+        borderRadius: s(8),
     },
-    addTableText: { fontSize: 14, color: "#000000", fontWeight: "500" },
+    addTableText: { fontSize: sf(14), color: "#000000", fontWeight: "500" },
 });

@@ -3,6 +3,7 @@ import {
     View, Text, FlatList, StyleSheet,
     ActivityIndicator, TouchableOpacity, Alert,
 } from "react-native";
+import { s, sf } from "../../Extras/responsive";
 import { io, Socket } from "socket.io-client";
 import OrderCard, { OrderItem } from "../../components/Customer/Orders/OrderCard";
 import { API, BASE_URL } from "../../Extras/api";
@@ -143,23 +144,23 @@ export default function OrdersScreen({ sellerId, tableId }: Props) {
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: "#F9FAFB" },
     centered:  { flex: 1, alignItems: "center", justifyContent: "center" },
-    listContent: { padding: 12, paddingBottom: 120 },
-    empty: { alignItems: "center", justifyContent: "center", marginTop: 80, gap: 8 },
-    emptyTitle: { fontSize: 18, fontWeight: "600", color: "#374151" },
-    emptyHint:  { fontSize: 13, color: "#9CA3AF" },
+    listContent: { padding: s(12), paddingBottom: s(120) },
+    empty: { alignItems: "center", justifyContent: "center", marginTop: s(80), gap: s(8) },
+    emptyTitle: { fontSize: sf(18), fontWeight: "600", color: "#374151" },
+    emptyHint:  { fontSize: sf(13), color: "#9CA3AF" },
     bottomBar: {
-        position: "absolute", bottom: 24, left: 16, right: 16,
-        flexDirection: "row", gap: 10,
+        position: "absolute", bottom: s(24), left: s(16), right: s(16),
+        flexDirection: "row", gap: s(10),
     },
     refreshBtn: {
         flex: 1, backgroundColor: "#6B7280",
-        paddingVertical: 13, borderRadius: 10, alignItems: "center",
+        paddingVertical: s(13), borderRadius: s(10), alignItems: "center",
     },
-    refreshText: { color: "#fff", fontSize: 14, fontWeight: "600" },
+    refreshText: { color: "#fff", fontSize: sf(14), fontWeight: "600" },
     billBtn: {
         flex: 2, backgroundColor: "#0D6E4F",
-        paddingVertical: 13, borderRadius: 10, alignItems: "center",
+        paddingVertical: s(13), borderRadius: s(10), alignItems: "center",
     },
-    billText: { color: "#fff", fontSize: 14, fontWeight: "700" },
+    billText: { color: "#fff", fontSize: sf(14), fontWeight: "700" },
     btnDisabled: { opacity: 0.6 },
 });

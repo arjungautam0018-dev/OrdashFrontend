@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import Svg, { Path, Circle } from "react-native-svg";
+import { s, sf } from "../../../Extras/responsive";
 
 const BoxIcon = ({ size = 26, color = "#9CA3AF" }) => (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -94,42 +95,42 @@ export default function MenuCard({ item, onAdd, cartQty }: Props) {
 const styles = StyleSheet.create({
     card: {
         flexDirection: "row", alignItems: "center",
-        backgroundColor: "#fff", borderRadius: 12,
-        padding: 12, marginBottom: 10,
+        backgroundColor: "#fff", borderRadius: s(12),
+        padding: s(12), marginBottom: s(10),
         borderWidth: 1, borderColor: "#E5E7EB",
         shadowColor: "#000", shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05, shadowRadius: 3, elevation: 1,
+        shadowOpacity: 0.05, shadowRadius: s(3), elevation: 1,
     },
     cardDim: { opacity: 0.55 },
     imageWrap: {
-        width: 52, height: 52, borderRadius: 26,
-        overflow: "hidden", marginRight: 12,
+        width: s(52), height: s(52), borderRadius: s(26),
+        overflow: "hidden", marginRight: s(12),
     },
-    image: { width: "100%", height: "100%", borderRadius: 26 },
+    image: { width: "100%", height: "100%", borderRadius: s(26) },
     iconBox: {
-        width: "100%", height: "100%", borderRadius: 26,
+        width: "100%", height: "100%", borderRadius: s(26),
         backgroundColor: "#F3F4F6", alignItems: "center", justifyContent: "center",
     },
-    info: { flex: 1, justifyContent: "center", gap: 4 },
-    name: { fontSize: 15, fontWeight: "600", color: "#111827" },
+    info: { flex: 1, justifyContent: "center", gap: s(4) },
+    name: { fontSize: sf(15), fontWeight: "600", color: "#111827" },
     catPill: {
         alignSelf: "flex-start", backgroundColor: "#E6F4F0",
-        borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2,
+        borderRadius: s(6), paddingHorizontal: s(8), paddingVertical: s(2),
     },
-    catText: { fontSize: 11, fontWeight: "600", color: "#0D6E4F", letterSpacing: 0.3 },
-    price: { fontSize: 14, fontWeight: "700", color: "#0D6E4F", marginTop: 2 },
-    right: { marginLeft: 8 },
+    catText: { fontSize: sf(11), fontWeight: "600", color: "#0D6E4F", letterSpacing: 0.3 },
+    price: { fontSize: sf(14), fontWeight: "700", color: "#0D6E4F", marginTop: s(2) },
+    right: { marginLeft: s(8) },
     addBtn: {
-        width: 34, height: 34, borderRadius: 17,
+        width: s(34), height: s(34), borderRadius: s(17),
         backgroundColor: "#0D6E4F",
         alignItems: "center", justifyContent: "center",
     },
     addBtnActive: { backgroundColor: "#F7D060" },
-    addBtnQty: { fontSize: 13, fontWeight: "700", color: "#1a1a1a" },
+    addBtnQty: { fontSize: sf(13), fontWeight: "700", color: "#1a1a1a" },
     outBadge: {
-        backgroundColor: "#FEF2F2", borderRadius: 6,
-        paddingHorizontal: 8, paddingVertical: 3,
+        backgroundColor: "#FEF2F2", borderRadius: s(6),
+        paddingHorizontal: s(8), paddingVertical: s(3),
         borderWidth: 1, borderColor: "#FECACA",
     },
-    outText: { fontSize: 11, fontWeight: "600", color: "#DC2626" },
+    outText: { fontSize: sf(11), fontWeight: "600", color: "#DC2626" },
 });

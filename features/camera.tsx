@@ -3,6 +3,7 @@ import {
     View, Text, StyleSheet, ActivityIndicator,
     Alert, TouchableOpacity,
 } from "react-native";
+import { s, sf, sw } from "../Extras/responsive";
 import { CameraView, useCameraPermissions, BarcodeScanningResult } from "expo-camera";
 import Svg, { Path, Rect } from "react-native-svg";
 import { API } from "../Extras/api";
@@ -195,16 +196,16 @@ export default function ScanQR({ navigation }: { navigation?: any }) {
     );
 }
 
-const FRAME_SIZE = 240;
+const FRAME_SIZE = sw(240);
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: "#000" },
 
     topLabel: {
-        position: "absolute", top: 70, width: "100%", alignItems: "center",
+        position: "absolute", top: s(70), width: "100%", alignItems: "center",
     },
-    title: { color: "#fff", fontSize: 22, fontWeight: "700", letterSpacing: 0.4 },
-    subtitle: { color: "rgba(255,255,255,0.7)", fontSize: 14, marginTop: 4 },
+    title: { color: "#fff", fontSize: sf(22), fontWeight: "700", letterSpacing: 0.4 },
+    subtitle: { color: "rgba(255,255,255,0.7)", fontSize: sf(14), marginTop: s(4) },
 
     frameWrapper: {
         position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
@@ -223,35 +224,35 @@ const styles = StyleSheet.create({
     processingOverlay: {
         position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
         backgroundColor: "rgba(0,0,0,0.65)",
-        alignItems: "center", justifyContent: "center", gap: 12,
+        alignItems: "center", justifyContent: "center", gap: s(12),
     },
-    processingText: { color: "#fff", fontSize: 16, fontWeight: "600" },
+    processingText: { color: "#fff", fontSize: sf(16), fontWeight: "600" },
 
     center: {
         flex: 1, backgroundColor: "#000",
-        alignItems: "center", justifyContent: "center", padding: 24,
+        alignItems: "center", justifyContent: "center", padding: s(24),
     },
-    permText: { color: "#fff", fontSize: 15, textAlign: "center", marginBottom: 20 },
+    permText: { color: "#fff", fontSize: sf(15), textAlign: "center", marginBottom: s(20) },
     permBtn: {
-        backgroundColor: "#F7D060", paddingVertical: 12, paddingHorizontal: 28,
-        borderRadius: 10,
+        backgroundColor: "#F7D060", paddingVertical: s(12), paddingHorizontal: s(28),
+        borderRadius: s(10),
     },
-    permBtnText: { fontSize: 15, fontWeight: "700", color: "#1a1a1a" },
+    permBtnText: { fontSize: sf(15), fontWeight: "700", color: "#1a1a1a" },
 
     successContainer: {
         flex: 1, backgroundColor: "#000",
-        alignItems: "center", justifyContent: "center", padding: 24,
+        alignItems: "center", justifyContent: "center", padding: s(24),
     },
     successCard: {
-        backgroundColor: "#fff", borderRadius: 20, padding: 32,
+        backgroundColor: "#fff", borderRadius: s(20), padding: s(32),
         alignItems: "center", width: "100%",
     },
-    successEmoji: { fontSize: 48, color: "#16A34A", marginBottom: 12 },
-    successTitle: { fontSize: 22, fontWeight: "700", color: "#1E3A8A", marginBottom: 8 },
-    successMsg: { fontSize: 15, color: "#6B7280", textAlign: "center", marginBottom: 24 },
+    successEmoji: { fontSize: sf(48), color: "#16A34A", marginBottom: s(12) },
+    successTitle: { fontSize: sf(22), fontWeight: "700", color: "#1E3A8A", marginBottom: s(8) },
+    successMsg: { fontSize: sf(15), color: "#6B7280", textAlign: "center", marginBottom: s(24) },
     scanAgainBtn: {
-        backgroundColor: "#F7D060", paddingVertical: 13, paddingHorizontal: 32,
-        borderRadius: 10,
+        backgroundColor: "#F7D060", paddingVertical: s(13), paddingHorizontal: s(32),
+        borderRadius: s(10),
     },
-    scanAgainText: { fontSize: 15, fontWeight: "700", color: "#1a1a1a" },
+    scanAgainText: { fontSize: sf(15), fontWeight: "700", color: "#1a1a1a" },
 });

@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path, Circle } from "react-native-svg";
+import { s, sf } from "../Extras/responsive";
 
 import CustomerTopBar from "../components/Customer/TopBar/CustomerTopBar";
 import HomeScreen from "../SubScreens/Customersubscreen/home";
@@ -28,12 +29,12 @@ const CartTabIcon = ({ color, badge }: { color: string; badge?: number }) => (
         </Svg>
         {!!badge && badge > 0 && (
             <View style={{
-                position: "absolute", top: -4, right: -6,
-                backgroundColor: "#EF4444", borderRadius: 8,
-                minWidth: 16, height: 16, alignItems: "center", justifyContent: "center",
-                paddingHorizontal: 3,
+                position: "absolute", top: -s(4), right: -s(6),
+                backgroundColor: "#EF4444", borderRadius: s(8),
+                minWidth: s(16), height: s(16), alignItems: "center", justifyContent: "center",
+                paddingHorizontal: s(3),
             }}>
-                <Text style={{ color: "#fff", fontSize: 10, fontWeight: "700" }}>
+                <Text style={{ color: "#fff", fontSize: sf(10), fontWeight: "700" }}>
                     {badge > 9 ? "9+" : badge}
                 </Text>
             </View>
@@ -131,10 +132,10 @@ export default function DashboardCustomer({ route }: Props) {
                         backgroundColor: "#fff",
                         borderTopWidth: 1,
                         borderTopColor: "#E5E7EB",
-                        height: 60 + insets.bottom,
+                        height: s(60) + insets.bottom,
                         paddingBottom: insets.bottom,
                     },
-                    tabBarLabelStyle: { fontSize: 11, fontWeight: "600" },
+                    tabBarLabelStyle: { fontSize: sf(11), fontWeight: "600" },
                     tabBarIcon: ({ color }) => {
                         if (r.name === "Menu") return <MenuTabIcon color={color} />;
                         if (r.name === "Cart") return <CartTabIcon color={color} badge={cartCount} />;

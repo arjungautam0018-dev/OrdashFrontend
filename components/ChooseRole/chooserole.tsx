@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { StoreIcon, BagIcon, ArrowRightIcon, WArrowRightIcon } from "../../Extras/icons";
 import { useNavigation } from "@react-navigation/native";
+import { s, sf } from "../../Extras/responsive";
 
 export default function ChooseRole() {
   const navigation = useNavigation<any>();
@@ -48,58 +49,58 @@ export default function ChooseRole() {
 const styles = StyleSheet.create({
     main:{
         flex:1,
-        gap:20,
-        marginTop:50,
+        gap: s(20),
+        marginTop: s(50),
     },
   card: {
     backgroundColor: "white",
-    marginHorizontal: 25,
-    marginTop: 20,
-    borderRadius: 12,
-    paddingVertical: 17,
-    paddingHorizontal: 14,
+    marginHorizontal: s(25),
+    marginTop: s(20),
+    borderRadius: s(12),
+    paddingVertical: s(17),
+    paddingHorizontal: s(14),
     flexDirection: "row",
     alignItems: "center",
   },
 
   cardSeller: {
     backgroundColor: "#7DD3A0",
-    marginHorizontal: 25,
-    marginTop: 15,
-    borderRadius: 12,
-    paddingVertical: 17,
-    paddingHorizontal: 14,
+    marginHorizontal: s(25),
+    marginTop: s(15),
+    borderRadius: s(12),
+    paddingVertical: s(17),
+    paddingHorizontal: s(14),
     flexDirection: "row",
     alignItems: "center",
   },
 
   textContainer: {
     flex: 1,
-    marginHorizontal: 10, // 🔥 reduced gap
+    marginHorizontal: s(10),
   },
 
   title: {
-    fontSize: 25,
+    fontSize: sf(25),
     fontWeight: "500",
     color: "#000",
   },
 
   subtitle: {
-    fontSize: 15,
+    fontSize: sf(15),
     color: "gray",
-    marginTop: 2,
+    marginTop: s(2),
   },
 
   titleSeller: {
-    fontSize: 25,
+    fontSize: sf(25),
     fontWeight: "500",
     color: "white",
   },
 
   subtitleSeller: {
-    fontSize: 15,
+    fontSize: sf(15),
     color: "rgba(255,255,255,0.85)",
-    marginTop: 2,
+    marginTop: s(2),
   },
 });
 

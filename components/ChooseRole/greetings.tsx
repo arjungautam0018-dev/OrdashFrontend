@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
+import { s, sf } from '../../Extras/responsive';
 
 
 export default function GreetingsFirst() {
@@ -24,36 +25,33 @@ export default function GreetingsFirst() {
 const styles = StyleSheet.create({
 
     top: {
-        marginTop: 80, // Increased slightly to clear status bars safely
-        paddingHorizontal: 30,
+        marginTop: s(80),
+        paddingHorizontal: s(30),
         gap: 0
     },
     firstline: {
-        flexDirection: "row", // Keeps items side-by-side
-        alignItems: "center",  // Centers the emoji vertically with the text
-        gap: 12,              // Spacing between text and emoji
-        marginBottom: 4,      // Slight spacing before the next line of text
+        flexDirection: "row",
+        alignItems: "center",
+        gap: s(12),
+        marginBottom: s(4),
     },
     text: {
-        fontSize: 36,
-        fontWeight: "700",    // Customary bold for headlines
+        fontSize: sf(36),
+        fontWeight: "700",
         color: "#111",
     },
     text2: {
-        fontSize: 36,
+        fontSize: sf(36),
         fontWeight: "700",
         color: "#008743",
     },
     emoji: {
-        height: 40,
-        width: 40,
+        height: s(40),
+        width: s(40),
         resizeMode: 'contain',
-        // Temporarily uncomment these to debug bounding boxes:
-        // borderColor: "red",
-        // borderWidth: 2,
     },
     text3: {
-        fontSize: 17,
-        marginTop: 5,
+        fontSize: sf(17),
+        marginTop: s(5),
     }
 });

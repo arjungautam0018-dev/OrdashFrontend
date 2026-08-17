@@ -3,6 +3,7 @@ import {
     View, Text, StyleSheet, FlatList, TouchableOpacity,
     ActivityIndicator, RefreshControl, ScrollView,
 } from "react-native";
+import { s, sf } from "../../Extras/responsive";
 import { useFocusEffect } from "@react-navigation/native";
 import StockCard from "./stockCard";
 import EditProductPopup, { Product } from "./popup";
@@ -132,22 +133,22 @@ export default function StocksSection() {
 
 const styles = StyleSheet.create({
     wrapper: { flex: 1},
-    centered: { flex: 1, alignItems: "center", justifyContent: "center", marginTop: 60 },
+    centered: { flex: 1, alignItems: "center", justifyContent: "center", marginTop: s(60) },
 
     filterScroll: { flexGrow: 0 },
-    filterRow: { paddingHorizontal: 12, paddingVertical: 6, gap: 6 },
+    filterRow: { paddingHorizontal: s(12), paddingVertical: s(6), gap: s(6) },
     chip: {
-        width: 80, paddingVertical: 5,
-        borderRadius: 20, backgroundColor: "#F3F4F6",
+        width: s(80), paddingVertical: s(5),
+        borderRadius: s(20), backgroundColor: "#F3F4F6",
         borderWidth: 1, borderColor: "#E5E7EB", alignItems: "center",
     },
     chipActive: { backgroundColor: "#1E3A8A", borderColor: "#1E3A8A" },
-    chipText: { fontSize: 12, fontWeight: "600", color: "#6B7280" },
+    chipText: { fontSize: sf(12), fontWeight: "600", color: "#6B7280" },
     chipTextActive: { color: "#fff" },
 
-    listContent: { paddingHorizontal: 12, paddingTop: 8, paddingBottom: 100 },
+    listContent: { paddingHorizontal: s(12), paddingTop: s(8), paddingBottom: s(100) },
 
-    empty: { alignItems: "center", marginTop: 60 },
-    emptyText: { fontSize: 16, fontWeight: "600", color: "#374151", marginBottom: 6 },
-    emptyHint: { fontSize: 13, color: "#9CA3AF" },
+    empty: { alignItems: "center", marginTop: s(60) },
+    emptyText: { fontSize: sf(16), fontWeight: "600", color: "#374151", marginBottom: s(6) },
+    emptyHint: { fontSize: sf(13), color: "#9CA3AF" },
 });

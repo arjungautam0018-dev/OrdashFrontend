@@ -3,6 +3,7 @@ import {
     Modal, View, Text, TouchableOpacity,
     StyleSheet, ActivityIndicator, Alert, Image,
 } from "react-native";
+import { s, sf, sw } from "../../Extras/responsive";
 import * as FileSystem from "expo-file-system/legacy";
 import * as MediaLibrary from "expo-media-library";
 import Svg, { Path } from "react-native-svg";
@@ -161,42 +162,42 @@ const styles = StyleSheet.create({
     sheet: {
         position: "absolute", bottom: 0, left: 0, right: 0,
         backgroundColor: "#fff",
-        borderTopLeftRadius: 24, borderTopRightRadius: 24,
-        paddingHorizontal: 20, paddingBottom: 40, paddingTop: 12,
+        borderTopLeftRadius: s(24), borderTopRightRadius: s(24),
+        paddingHorizontal: s(20), paddingBottom: s(40), paddingTop: s(12),
     },
     handle: {
-        width: 40, height: 4, borderRadius: 2,
-        backgroundColor: "#E5E7EB", alignSelf: "center", marginBottom: 16,
+        width: s(40), height: s(4), borderRadius: s(2),
+        backgroundColor: "#E5E7EB", alignSelf: "center", marginBottom: s(16),
     },
     headerRow: {
         flexDirection: "row", justifyContent: "space-between",
-        alignItems: "flex-start", marginBottom: 20,
+        alignItems: "flex-start", marginBottom: s(20),
     },
-    sheetTitle: { fontSize: 18, fontWeight: "700", color: "#1E3A8A" },
-    sheetSub: { fontSize: 13, color: "#6B7280", marginTop: 2 },
+    sheetTitle: { fontSize: sf(18), fontWeight: "700", color: "#1E3A8A" },
+    sheetSub: { fontSize: sf(13), color: "#6B7280", marginTop: s(2) },
     editBtn: {
-        flexDirection: "row", alignItems: "center", gap: 4,
-        paddingHorizontal: 12, paddingVertical: 7,
-        borderRadius: 8, borderWidth: 1, borderColor: "#E5E7EB",
+        flexDirection: "row", alignItems: "center", gap: s(4),
+        paddingHorizontal: s(12), paddingVertical: s(7),
+        borderRadius: s(8), borderWidth: 1, borderColor: "#E5E7EB",
         backgroundColor: "#F9FAFB",
     },
-    editBtnText: { fontSize: 13, fontWeight: "600", color: "#6B7280" },
+    editBtnText: { fontSize: sf(13), fontWeight: "600", color: "#6B7280" },
 
     qrBox: {
         alignItems: "center", justifyContent: "center",
-        backgroundColor: "#F9FAFB", borderRadius: 16,
+        backgroundColor: "#F9FAFB", borderRadius: s(16),
         borderWidth: 1, borderColor: "#E5E7EB",
-        padding: 16, marginBottom: 20,
+        padding: s(16), marginBottom: s(20),
     },
-    qrImage: { width: 220, height: 220, borderRadius: 8 },
-    qrPlaceholder: { width: 220, height: 220, alignItems: "center", justifyContent: "center", gap: 8 },
-    qrLoadingText: { fontSize: 14, color: "#9CA3AF", fontWeight: "500" },
+    qrImage: { width: sw(220), height: sw(220), borderRadius: s(8) },
+    qrPlaceholder: { width: sw(220), height: sw(220), alignItems: "center", justifyContent: "center", gap: s(8) },
+    qrLoadingText: { fontSize: sf(14), color: "#9CA3AF", fontWeight: "500" },
 
-    actions: { gap: 10 },
+    actions: { gap: s(10) },
     downloadBtn: {
         flexDirection: "row", alignItems: "center", justifyContent: "center",
-        gap: 8, paddingVertical: 14, borderRadius: 12,
+        gap: s(8), paddingVertical: s(14), borderRadius: s(12),
         backgroundColor: "#F7D060",
     },
-    downloadText: { fontSize: 15, fontWeight: "700", color: "#1a1a1a" },
+    downloadText: { fontSize: sf(15), fontWeight: "700", color: "#1a1a1a" },
 });

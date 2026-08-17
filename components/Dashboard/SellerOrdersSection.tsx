@@ -3,6 +3,7 @@ import {
     View, Text, StyleSheet, FlatList, TouchableOpacity,
     ActivityIndicator, RefreshControl,
 } from "react-native";
+import { s, sf } from "../../Extras/responsive";
 import { io, Socket } from "socket.io-client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SellerOrderCard, { SellerOrder, OrderStatus } from "./SellerOrderCard";
@@ -219,36 +220,36 @@ const styles = StyleSheet.create({
 
     liveRow: {
         flexDirection: "row", alignItems: "center",
-        paddingHorizontal: 14, paddingTop: 10, gap: 6,
+        paddingHorizontal: s(14), paddingTop: s(10), gap: s(6),
     },
-    liveDot: { width: 8, height: 8, borderRadius: 4 },
+    liveDot: { width: s(8), height: s(8), borderRadius: s(4) },
     liveDotOn:  { backgroundColor: "#16A34A" },
     liveDotOff: { backgroundColor: "#EF4444" },
-    liveText: { fontSize: 12, fontWeight: "600", color: "#6B7280" },
+    liveText: { fontSize: sf(12), fontWeight: "600", color: "#6B7280" },
 
     tabRow: {
         flexDirection: "row",
-        paddingHorizontal: 12, paddingTop: 8, paddingBottom: 4,
-        gap: 8,
+        paddingHorizontal: s(12), paddingTop: s(8), paddingBottom: s(4),
+        gap: s(8),
     },
     tab: {
         flexDirection: "row", alignItems: "center",
-        paddingHorizontal: 14, paddingVertical: 7,
-        borderRadius: 20, backgroundColor: "#F3F4F6",
-        borderWidth: 1, borderColor: "#E5E7EB", gap: 5,
+        paddingHorizontal: s(14), paddingVertical: s(7),
+        borderRadius: s(20), backgroundColor: "#F3F4F6",
+        borderWidth: 1, borderColor: "#E5E7EB", gap: s(5),
     },
     tabActive: { backgroundColor: "#6C63FF", borderColor: "#6C63FF" },
-    tabText: { fontSize: 13, fontWeight: "600", color: "#6B7280" },
+    tabText: { fontSize: sf(13), fontWeight: "600", color: "#6B7280" },
     tabTextActive: { color: "#fff" },
     countBadge: {
-        backgroundColor: "#EF4444", borderRadius: 8,
-        minWidth: 18, height: 18,
-        alignItems: "center", justifyContent: "center", paddingHorizontal: 4,
+        backgroundColor: "#EF4444", borderRadius: s(8),
+        minWidth: s(18), height: s(18),
+        alignItems: "center", justifyContent: "center", paddingHorizontal: s(4),
     },
-    countText: { color: "#fff", fontSize: 10, fontWeight: "700" },
+    countText: { color: "#fff", fontSize: sf(10), fontWeight: "700" },
 
-    listContent: { paddingHorizontal: 12, paddingTop: 8, paddingBottom: 100 },
-    empty: { alignItems: "center", marginTop: 60, gap: 8 },
-    emptyTitle: { fontSize: 16, fontWeight: "600", color: "#374151" },
-    emptyHint: { fontSize: 13, color: "#9CA3AF" },
+    listContent: { paddingHorizontal: s(12), paddingTop: s(8), paddingBottom: s(100) },
+    empty: { alignItems: "center", marginTop: s(60), gap: s(8) },
+    emptyTitle: { fontSize: sf(16), fontWeight: "600", color: "#374151" },
+    emptyHint: { fontSize: sf(13), color: "#9CA3AF" },
 });

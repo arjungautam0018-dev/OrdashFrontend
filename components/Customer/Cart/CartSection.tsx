@@ -3,6 +3,7 @@ import {
     View, Text, FlatList, TouchableOpacity,
     StyleSheet, ActivityIndicator, Alert,
 } from "react-native";
+import { s, sf } from "../../../Extras/responsive";
 import CartCard from "./CartCard";
 import { MenuItem } from "../Menu/MenuCard";
 import { API } from "../../../Extras/api";
@@ -107,29 +108,29 @@ export default function CartSection({ sellerId, tableId, cart, menuItems, onIncr
 
 const styles = StyleSheet.create({
     wrapper: { flex: 1 },
-    listContent: { paddingHorizontal: 12, paddingTop: 12, paddingBottom: 180 },
+    listContent: { paddingHorizontal: s(12), paddingTop: s(12), paddingBottom: s(180) },
     footer: {
         position: "absolute", bottom: 0, left: 0, right: 0,
-        backgroundColor: "#fff", paddingHorizontal: 16,
-        paddingTop: 16, paddingBottom: 32,
+        backgroundColor: "#fff", paddingHorizontal: s(16),
+        paddingTop: s(16), paddingBottom: s(32),
         borderTopWidth: 1, borderTopColor: "#E5E7EB",
         shadowColor: "#000", shadowOffset: { width: 0, height: -2 },
-        shadowOpacity: 0.06, shadowRadius: 8, elevation: 8,
+        shadowOpacity: 0.06, shadowRadius: s(8), elevation: 8,
     },
     totalRow: {
         flexDirection: "row", justifyContent: "space-between",
-        alignItems: "center", marginBottom: 14,
+        alignItems: "center", marginBottom: s(14),
     },
-    totalLabel: { fontSize: 16, fontWeight: "600", color: "#374151" },
-    totalValue: { fontSize: 20, fontWeight: "700", color: "#0D6E4F" },
+    totalLabel: { fontSize: sf(16), fontWeight: "600", color: "#374151" },
+    totalValue: { fontSize: sf(20), fontWeight: "700", color: "#0D6E4F" },
     orderBtn: {
-        backgroundColor: "#F7D060", paddingVertical: 15,
-        borderRadius: 12, alignItems: "center",
+        backgroundColor: "#F7D060", paddingVertical: s(15),
+        borderRadius: s(12), alignItems: "center",
         shadowColor: "#F7D060", shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.35, shadowRadius: 6, elevation: 3,
+        shadowOpacity: 0.35, shadowRadius: s(6), elevation: 3,
     },
-    orderBtnText: { fontSize: 16, fontWeight: "700", color: "#1a1a1a" },
-    empty: { flex: 1, alignItems: "center", justifyContent: "center", gap: 8 },
-    emptyTitle: { fontSize: 18, fontWeight: "600", color: "#374151" },
-    emptyHint: { fontSize: 13, color: "#9CA3AF" },
+    orderBtnText: { fontSize: sf(16), fontWeight: "700", color: "#1a1a1a" },
+    empty: { flex: 1, alignItems: "center", justifyContent: "center", gap: s(8) },
+    emptyTitle: { fontSize: sf(18), fontWeight: "600", color: "#374151" },
+    emptyHint: { fontSize: sf(13), color: "#9CA3AF" },
 });

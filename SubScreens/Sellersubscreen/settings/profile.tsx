@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { s, sf } from "../../../Extras/responsive";
 import { authFetch } from "../../../Extras/authFetch";
 import { API } from "../../../Extras/api";
 
@@ -72,27 +73,27 @@ function Row({ label, value }: { label: string; value?: string }) {
 }
 
 const styles = StyleSheet.create({
-    container:  { flex: 1, backgroundColor: "#F9FAFB", padding: 20 },
+    container:  { flex: 1, backgroundColor: "#F9FAFB", padding: s(20) },
     centered:   { flex: 1, alignItems: "center", justifyContent: "center" },
-    avatarRow:  { flexDirection: "row", alignItems: "center", gap: 16, marginBottom: 28 },
+    avatarRow:  { flexDirection: "row", alignItems: "center", gap: s(16), marginBottom: s(28) },
     avatar: {
-        width: 60, height: 60, borderRadius: 30,
+        width: s(60), height: s(60), borderRadius: s(30),
         backgroundColor: "#6C63FF", alignItems: "center", justifyContent: "center",
     },
-    avatarText: { color: "#fff", fontSize: 26, fontWeight: "700" },
-    name:       { fontSize: 18, fontWeight: "700", color: "#111827" },
-    sub:        { fontSize: 13, color: "#6B7280", marginTop: 2 },
+    avatarText: { color: "#fff", fontSize: sf(26), fontWeight: "700" },
+    name:       { fontSize: sf(18), fontWeight: "700", color: "#111827" },
+    sub:        { fontSize: sf(13), color: "#6B7280", marginTop: s(2) },
     card: {
-        backgroundColor: "#fff", borderRadius: 14,
-        paddingHorizontal: 16, paddingVertical: 4,
+        backgroundColor: "#fff", borderRadius: s(14),
+        paddingHorizontal: s(16), paddingVertical: s(4),
         shadowColor: "#000", shadowOpacity: 0.06,
-        shadowOffset: { width: 0, height: 2 }, shadowRadius: 6, elevation: 2,
+        shadowOffset: { width: 0, height: 2 }, shadowRadius: s(6), elevation: 2,
     },
     row: {
         flexDirection: "row", justifyContent: "space-between",
-        alignItems: "center", paddingVertical: 14,
+        alignItems: "center", paddingVertical: s(14),
         borderBottomWidth: 1, borderBottomColor: "#F3F4F6",
     },
-    rowLabel: { fontSize: 14, color: "#6B7280", fontWeight: "500" },
-    rowValue: { fontSize: 14, color: "#111827", fontWeight: "600" },
+    rowLabel: { fontSize: sf(14), color: "#6B7280", fontWeight: "500" },
+    rowValue: { fontSize: sf(14), color: "#111827", fontWeight: "600" },
 });

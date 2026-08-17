@@ -73,49 +73,49 @@ const styles = StyleSheet.create({
   card: {
     width: "80%",
     backgroundColor: "#fff",
-    borderRadius: 16,
-    padding: 24,
+    borderRadius: s(16),
+    padding: s(24),
     alignItems: "center",
     elevation: 6,
     shadowColor: "#000",
     shadowOpacity: 0.2,
-    shadowRadius: 8,
+    shadowRadius: s(8),
     shadowOffset: { width: 0, height: 4 },
   },
   title: {
-    fontSize: 20,
+    fontSize: sf(20),
     fontWeight: "700",
     color: "#1a1a1a",
-    marginBottom: 4,
+    marginBottom: s(4),
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: sf(13),
     color: "gray",
-    marginBottom: 20,
+    marginBottom: s(20),
   },
   btn: {
     width: "100%",
-    paddingVertical: 14,
-    borderRadius: 10,
+    paddingVertical: s(14),
+    borderRadius: s(10),
     alignItems: "center",
-    marginBottom: 12,
+    marginBottom: s(12),
   },
   customerBtn: {
-    backgroundColor: "#22c55e", // green
+    backgroundColor: "#22c55e",
   },
   sellerBtn: {
-    backgroundColor: "#3b82f6", // blue
+    backgroundColor: "#3b82f6",
   },
   btnText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: sf(16),
     fontWeight: "600",
   },
   cancelBtn: {
-    marginTop: 4,
+    marginTop: s(4),
   },
   cancelText: {
     color: "gray",
-    fontSize: 14,
+    fontSize: sf(14),
   },
 });

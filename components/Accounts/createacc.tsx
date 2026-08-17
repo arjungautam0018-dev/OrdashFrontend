@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { NavOrdersIcon } from "../../Extras/icons";
+import { s, sf } from "../../Extras/responsive";
 import AccountsFormPopup from "./formpopup";
 import { authFetch } from "../../Extras/authFetch";
 import { API } from "../../Extras/api";
@@ -44,7 +45,7 @@ export default function TopCreateAcc({ onAccountCreated }: { onAccountCreated?: 
 }
 const styles = StyleSheet.create({
     Text:{
-        fontSize: 19,
+        fontSize: sf(19),
         fontWeight: "bold",
         color: "#4a42e0",
     },
@@ -58,9 +59,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#F7D060",
-        gap: 6,
-        paddingVertical: 8,
-        paddingHorizontal: 14,
-        borderRadius: 8,
+        gap: s(6),
+        paddingVertical: s(8),
+        paddingHorizontal: s(14),
+        borderRadius: s(8),
     },
 });

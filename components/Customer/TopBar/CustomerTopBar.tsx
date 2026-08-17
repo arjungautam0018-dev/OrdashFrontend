@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path, Rect } from "react-native-svg";
+import { s, sf } from "../../../Extras/responsive";
 
 const TableIcon = ({ size = 20 }) => (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -36,18 +37,18 @@ const styles = StyleSheet.create({
     safe: { backgroundColor: "#0D6E4F" },
     container: {
         flexDirection: "row", alignItems: "center",
-        paddingHorizontal: 16, paddingVertical: 12,
+        paddingHorizontal: s(16), paddingVertical: s(12),
         backgroundColor: "#0D6E4F",
         shadowColor: "#0D6E4F",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3, shadowRadius: 8, elevation: 6,
+        shadowOffset: { width: 0, height: s(4) },
+        shadowOpacity: 0.3, shadowRadius: s(8), elevation: 6,
     },
     badge: {
-        width: 36, height: 36, borderRadius: 10,
+        width: s(36), height: s(36), borderRadius: s(10),
         backgroundColor: "rgba(255,255,255,0.18)",
         alignItems: "center", justifyContent: "center",
     },
     center: { flex: 1, alignItems: "center" },
-    shopName: { fontSize: 15, fontWeight: "600", color: "#fff" },
-    tableName: { fontSize: 12, color: "rgba(255,255,255,0.75)", marginTop: 1 },
+    shopName: { fontSize: sf(15), fontWeight: "600", color: "#fff" },
+    tableName: { fontSize: sf(12), color: "rgba(255,255,255,0.75)", marginTop: s(1) },
 });

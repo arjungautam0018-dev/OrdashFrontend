@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { s, sf } from "../../../Extras/responsive";
 
 export interface OrderItem {
     _id: string;
@@ -51,25 +52,25 @@ export default function OrderCard({ order }: Props) {
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: "#fff", borderRadius: 12,
-        padding: 14, marginBottom: 12,
+        backgroundColor: "#fff", borderRadius: s(12),
+        padding: s(14), marginBottom: s(12),
         borderWidth: 1, borderColor: "#E5E7EB",
         shadowColor: "#000", shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05, shadowRadius: 3, elevation: 1,
+        shadowOpacity: 0.05, shadowRadius: s(3), elevation: 1,
     },
-    header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 },
-    time: { fontSize: 13, color: "#6B7280", fontWeight: "500" },
+    header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: s(12) },
+    time: { fontSize: sf(13), color: "#6B7280", fontWeight: "500" },
     badge: {
-        borderRadius: 6, paddingHorizontal: 10, paddingVertical: 3,
+        borderRadius: s(6), paddingHorizontal: s(10), paddingVertical: s(3),
         borderWidth: 1,
     },
-    badgeText: { fontSize: 12, fontWeight: "600" },
-    itemRow: { flexDirection: "row", alignItems: "center", marginBottom: 6 },
-    itemName: { flex: 1, fontSize: 14, fontWeight: "500", color: "#374151" },
-    itemQty: { fontSize: 13, color: "#6B7280", marginHorizontal: 8 },
-    itemPrice: { fontSize: 14, fontWeight: "600", color: "#111827" },
-    divider: { height: 1, backgroundColor: "#F3F4F6", marginVertical: 10 },
+    badgeText: { fontSize: sf(12), fontWeight: "600" },
+    itemRow: { flexDirection: "row", alignItems: "center", marginBottom: s(6) },
+    itemName: { flex: 1, fontSize: sf(14), fontWeight: "500", color: "#374151" },
+    itemQty: { fontSize: sf(13), color: "#6B7280", marginHorizontal: s(8) },
+    itemPrice: { fontSize: sf(14), fontWeight: "600", color: "#111827" },
+    divider: { height: 1, backgroundColor: "#F3F4F6", marginVertical: s(10) },
     totalRow: { flexDirection: "row", justifyContent: "space-between" },
-    totalLabel: { fontSize: 14, fontWeight: "600", color: "#374151" },
-    totalValue: { fontSize: 15, fontWeight: "700", color: "#0D6E4F" },
+    totalLabel: { fontSize: sf(14), fontWeight: "600", color: "#374151" },
+    totalValue: { fontSize: sf(15), fontWeight: "700", color: "#0D6E4F" },
 });

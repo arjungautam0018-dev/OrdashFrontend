@@ -5,6 +5,7 @@ import Svg, { Path, Circle } from 'react-native-svg';
 import { SettingsIcon } from '../../Extras/icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { s, sf } from '../../Extras/responsive';
 
 const LogoutIcon = ({ size = 20, color = "#fff" }: { size?: number; color?: string }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -83,22 +84,22 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: s(16),
+    paddingVertical: s(12),
     backgroundColor: '#6C63FF',
     shadowColor: '#6C63FF',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: s(4) },
     shadowOpacity: 0.25,
-    shadowRadius: 8,
+    shadowRadius: s(8),
     elevation: 6,
   },
   side: {
-    width: 32,
+    width: s(32),
   },
   logoBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
+    width: s(32),
+    height: s(32),
+    borderRadius: s(10),
     backgroundColor: 'rgba(255,255,255,0.18)',
     alignItems: 'center',
     justifyContent: 'center',
@@ -106,14 +107,14 @@ const styles = StyleSheet.create({
   hotelName: {
     flex: 1,
     textAlign: 'center',
-    fontSize: 15,
+    fontSize: sf(15),
     fontWeight: '600',
     color: '#FFFFFF',
   },
   settingsButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
+    width: s(32),
+    height: s(32),
+    borderRadius: s(10),
     backgroundColor: 'rgba(255,255,255,0.18)',
     alignItems: 'center',
     justifyContent: 'center',

@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Path, Svg } from "react-native-svg";
+import { s, sf } from "../../Extras/responsive";
 
 function AccountIcon({ size = 38, color = "#4a42e0" }: { size?: number; color?: string }) {
   return (
@@ -98,54 +99,54 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
-    borderRadius: 14,
-    paddingVertical: 15,
-    paddingHorizontal: 14,
-    marginVertical: 5,
+    borderRadius: s(14),
+    paddingVertical: s(15),
+    paddingHorizontal: s(14),
+    marginVertical: s(5),
     shadowColor: "#000",
     shadowOpacity: 0.06,
-    shadowRadius: 6,
+    shadowRadius: s(6),
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
-    gap: 12,
-    marginBottom: 10,
+    gap: s(12),
+    marginBottom: s(10),
   },
   avatar: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
+    width: s(46),
+    height: s(46),
+    borderRadius: s(23),
     backgroundColor: "#ede9fe",
     alignItems: "center",
     justifyContent: "center",
   },
   info: {
     flex: 1,
-    gap: 5,
+    gap: s(5),
   },
   name: {
-    fontSize: 17,
+    fontSize: sf(17),
     fontWeight: "600",
     color: "#1a1a2e",
   },
   roleBadge: {
     alignSelf: "flex-start",
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 20,
+    paddingHorizontal: s(8),
+    paddingVertical: s(2),
+    borderRadius: s(20),
   },
   roleText: {
-    fontSize: 12,
+    fontSize: sf(12),
     fontWeight: "600",
     letterSpacing: 0.3,
   },
   actions: {
     flexDirection: "row",
-    gap: 10,
+    gap: s(10),
   },
   actionBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
+    width: s(36),
+    height: s(36),
+    borderRadius: s(8),
     backgroundColor: "#ede9fe",
     alignItems: "center",
     justifyContent: "center",

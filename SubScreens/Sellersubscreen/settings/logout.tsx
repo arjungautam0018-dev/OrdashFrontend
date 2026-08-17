@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { s, sf } from "../../../Extras/responsive";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { authFetch } from "../../../Extras/authFetch";
@@ -49,19 +50,19 @@ export default function LogoutSettings() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "#F9FAFB", padding: 20, justifyContent: "center" },
+    container: { flex: 1, backgroundColor: "#F9FAFB", padding: s(20), justifyContent: "center" },
     card: {
-        backgroundColor: "#fff", borderRadius: 16, padding: 24,
-        alignItems: "center", gap: 12,
+        backgroundColor: "#fff", borderRadius: s(16), padding: s(24),
+        alignItems: "center", gap: s(12),
         shadowColor: "#000", shadowOpacity: 0.06,
-        shadowOffset: { width: 0, height: 2 }, shadowRadius: 8, elevation: 3,
+        shadowOffset: { width: 0, height: 2 }, shadowRadius: s(8), elevation: 3,
     },
-    title: { fontSize: 20, fontWeight: "700", color: "#111827" },
-    sub:   { fontSize: 14, color: "#6B7280", textAlign: "center", lineHeight: 20 },
+    title: { fontSize: sf(20), fontWeight: "700", color: "#111827" },
+    sub:   { fontSize: sf(14), color: "#6B7280", textAlign: "center", lineHeight: s(20) },
     btn: {
-        marginTop: 8, backgroundColor: "#EF4444",
-        paddingVertical: 13, paddingHorizontal: 40,
-        borderRadius: 10, minWidth: 160, alignItems: "center",
+        marginTop: s(8), backgroundColor: "#EF4444",
+        paddingVertical: s(13), paddingHorizontal: s(40),
+        borderRadius: s(10), minWidth: s(160), alignItems: "center",
     },
-    btnText: { color: "#fff", fontSize: 15, fontWeight: "700" },
+    btnText: { color: "#fff", fontSize: sf(15), fontWeight: "700" },
 });

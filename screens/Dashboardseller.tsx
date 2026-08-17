@@ -2,6 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { s, sf } from '../Extras/responsive';
 
 import { NavHomeIcon, NavOrdersIcon, NavStockIcon, NavTablesIcon, NavAnalyticsIcon } from '../Extras/icons';
 
@@ -54,11 +55,11 @@ export default function DashboardSellerE() {
           backgroundColor: '#fff',
           borderTopWidth: 1,
           borderTopColor: '#eee',
-          height: 60 + insets.bottom,
+          height: s(60) + insets.bottom,
           paddingBottom: insets.bottom,
         },
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: sf(11),
           fontWeight: '600',
         },
       })}
@@ -74,17 +75,17 @@ export default function DashboardSellerE() {
             <TouchableOpacity
               {...(props as any)}
               style={{
-                top: -18,
+                top: -s(18),
                 justifyContent: 'center',
                 alignItems: 'center',
-                width: 60,
-                height: 60,
-                borderRadius: 30,
+                width: s(60),
+                height: s(60),
+                borderRadius: s(30),
                 backgroundColor: '#6C63FF',
                 shadowColor: '#6C63FF',
                 shadowOffset: { width: 0, height: 4 },
                 shadowOpacity: 0.5,
-                shadowRadius: 8,
+                shadowRadius: s(8),
                 elevation: 8,
               }}
             />

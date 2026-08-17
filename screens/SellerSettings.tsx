@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import Svg, { Path, Circle } from "react-native-svg";
+import { s, sf } from "../Extras/responsive";
 
 import ProfileSettings       from "../SubScreens/Sellersubscreen/settings/profile";
 import SubscriptionSettings from "../SubScreens/Sellersubscreen/settings/subscriptions";
@@ -73,19 +74,19 @@ const header = StyleSheet.create({
     safeArea:  { backgroundColor: "#6C63FF" },
     container: {
         flexDirection: "row", alignItems: "center",
-        paddingHorizontal: 16, paddingVertical: 12,
+        paddingHorizontal: s(16), paddingVertical: s(12),
         backgroundColor: "#6C63FF",
-        shadowColor: "#6C63FF", shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.25, shadowRadius: 8, elevation: 6,
+        shadowColor: "#6C63FF", shadowOffset: { width: 0, height: s(4) },
+        shadowOpacity: 0.25, shadowRadius: s(8), elevation: 6,
     },
     backBtn: {
-        width: 36, height: 36, borderRadius: 10,
+        width: s(36), height: s(36), borderRadius: s(10),
         backgroundColor: "rgba(255,255,255,0.18)",
         alignItems: "center", justifyContent: "center",
     },
     title: {
         flex: 1, textAlign: "center",
-        fontSize: 15, fontWeight: "600", color: "#fff",
+        fontSize: sf(15), fontWeight: "600", color: "#fff",
     },
 });
 

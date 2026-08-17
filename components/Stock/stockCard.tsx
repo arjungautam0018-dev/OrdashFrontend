@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import Svg, { Path, Circle } from "react-native-svg";
+import { s, sf } from "../../Extras/responsive";
 
 // ── Box / product placeholder icon ───────────────────────────────────────────
 const BoxIcon = ({ size = 28, color = "#9CA3AF" }) => (
@@ -98,35 +99,35 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#fff",
-        borderRadius: 12,
-        padding: 12,
-        marginBottom: 10,
+        borderRadius: s(12),
+        padding: s(12),
+        marginBottom: s(10),
         borderWidth: 1,
         borderColor: "#E5E7EB",
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.05,
-        shadowRadius: 3,
+        shadowRadius: s(3),
         elevation: 1,
     },
 
     // Image / icon
     imageWrap: {
-        width: 52,
-        height: 52,
-        borderRadius: 26,
+        width: s(52),
+        height: s(52),
+        borderRadius: s(26),
         overflow: "hidden",
-        marginRight: 12,
+        marginRight: s(12),
     },
     image: {
         width: "100%",
         height: "100%",
-        borderRadius: 26,
+        borderRadius: s(26),
     },
     iconBox: {
         width: "100%",
         height: "100%",
-        borderRadius: 26,
+        borderRadius: s(26),
         backgroundColor: "#F3F4F6",
         alignItems: "center",
         justifyContent: "center",
@@ -136,22 +137,22 @@ const styles = StyleSheet.create({
     info: {
         flex: 1,
         justifyContent: "center",
-        gap: 6,
+        gap: s(6),
     },
     name: {
-        fontSize: 15,
+        fontSize: sf(15),
         fontWeight: "600",
         color: "#111827",
     },
     categoryPill: {
         alignSelf: "flex-start",
         backgroundColor: "#EFF6FF",
-        borderRadius: 6,
-        paddingHorizontal: 8,
-        paddingVertical: 2,
+        borderRadius: s(6),
+        paddingHorizontal: s(8),
+        paddingVertical: s(2),
     },
     categoryText: {
-        fontSize: 11,
+        fontSize: sf(11),
         fontWeight: "600",
         color: "#1E3A8A",
         letterSpacing: 0.3,
@@ -160,11 +161,11 @@ const styles = StyleSheet.create({
     // Right
     right: {
         alignItems: "flex-end",
-        gap: 6,
-        marginLeft: 8,
+        gap: s(6),
+        marginLeft: s(8),
     },
     price: {
-        fontSize: 15,
+        fontSize: sf(15),
         fontWeight: "700",
         color: "#1E3A8A",
     },
@@ -172,14 +173,14 @@ const styles = StyleSheet.create({
     // Quantity badge — normal
     qtyBadge: {
         backgroundColor: "#F0FDF4",
-        borderRadius: 6,
-        paddingHorizontal: 8,
-        paddingVertical: 2,
+        borderRadius: s(6),
+        paddingHorizontal: s(8),
+        paddingVertical: s(2),
         borderWidth: 1,
         borderColor: "#BBF7D0",
     },
     qtyText: {
-        fontSize: 11,
+        fontSize: sf(11),
         fontWeight: "600",
         color: "#16A34A",
     },
@@ -205,12 +206,12 @@ const styles = StyleSheet.create({
     // Service badge
     serviceBadge: {
         backgroundColor: "#EDE9FE",
-        borderRadius: 6,
-        paddingHorizontal: 8,
-        paddingVertical: 2,
+        borderRadius: s(6),
+        paddingHorizontal: s(8),
+        paddingVertical: s(2),
     },
     serviceText: {
-        fontSize: 11,
+        fontSize: sf(11),
         fontWeight: "600",
         color: "#6C63FF",
     },

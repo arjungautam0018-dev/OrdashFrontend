@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Svg, { Path } from "react-native-svg";
+import { s, sf } from "../../../Extras/responsive";
 import { MenuItem } from "../Menu/MenuCard";
 
 const MinusIcon = ({ size = 16, color = "#0D6E4F" }) => (
@@ -46,24 +47,24 @@ export default function CartCard({ item, qty, onIncrease, onDecrease }: Props) {
 const styles = StyleSheet.create({
     card: {
         flexDirection: "row", alignItems: "center",
-        backgroundColor: "#fff", borderRadius: 12,
-        padding: 14, marginBottom: 10,
+        backgroundColor: "#fff", borderRadius: s(12),
+        padding: s(14), marginBottom: s(10),
         borderWidth: 1, borderColor: "#E5E7EB",
         shadowColor: "#000", shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.04, shadowRadius: 3, elevation: 1,
+        shadowOpacity: 0.04, shadowRadius: s(3), elevation: 1,
     },
     info: { flex: 1 },
-    name: { fontSize: 15, fontWeight: "600", color: "#111827", marginBottom: 3 },
-    price: { fontSize: 12, color: "#6B7280" },
+    name: { fontSize: sf(15), fontWeight: "600", color: "#111827", marginBottom: s(3) },
+    price: { fontSize: sf(12), color: "#6B7280" },
     stepper: {
         flexDirection: "row", alignItems: "center",
-        gap: 12, marginHorizontal: 12,
+        gap: s(12), marginHorizontal: s(12),
     },
     stepBtn: {
-        width: 30, height: 30, borderRadius: 15,
+        width: s(30), height: s(30), borderRadius: s(15),
         backgroundColor: "#E6F4F0",
         alignItems: "center", justifyContent: "center",
     },
-    qty: { fontSize: 15, fontWeight: "700", color: "#0D6E4F", minWidth: 20, textAlign: "center" },
-    subtotal: { fontSize: 15, fontWeight: "700", color: "#0D6E4F", minWidth: 48, textAlign: "right" },
+    qty: { fontSize: sf(15), fontWeight: "700", color: "#0D6E4F", minWidth: s(20), textAlign: "center" },
+    subtotal: { fontSize: sf(15), fontWeight: "700", color: "#0D6E4F", minWidth: s(48), textAlign: "right" },
 });

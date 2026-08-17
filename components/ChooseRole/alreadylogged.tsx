@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { s, sf } from "../../Extras/responsive";
 
 
 export default function Loggedin() {
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop:160,
+    marginTop: s(160),
   },
 
   row: {
@@ -37,12 +38,12 @@ const styles = StyleSheet.create({
 
   text: {
     color: "gray",
-    fontSize: 14,
+    fontSize: sf(14),
   },
 
   nav: {
     color: "green",
-    fontSize: 14,
+    fontSize: sf(14),
     fontWeight: "600",
   },
 });

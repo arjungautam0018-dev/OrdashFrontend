@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { s, sf } from "../../../Extras/responsive";
 
 export default function PrivacySettings() {
     return (
@@ -12,7 +13,7 @@ export default function PrivacySettings() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "#F9FAFB", padding: 20 },
-    title:     { fontSize: 18, fontWeight: "700", color: "#111827", marginBottom: 8 },
-    sub:       { fontSize: 14, color: "#6B7280" },
+    container: { flex: 1, backgroundColor: "#F9FAFB", padding: s(20) },
+    title:     { fontSize: sf(18), fontWeight: "700", color: "#111827", marginBottom: s(8) },
+    sub:       { fontSize: sf(14), color: "#6B7280" },
 });

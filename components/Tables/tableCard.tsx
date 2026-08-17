@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
+import { s, sf } from "../../Extras/responsive";
 
 const TableIcon = ({ size = 26, color = "#9CA3AF" }) => (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -65,35 +66,35 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#fff",
-        borderRadius: 12,
-        padding: 12,
-        marginBottom: 10,
+        borderRadius: s(12),
+        padding: s(12),
+        marginBottom: s(10),
         borderWidth: 1,
         borderColor: "#E5E7EB",
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.05,
-        shadowRadius: 3,
+        shadowRadius: s(3),
         elevation: 1,
     },
     iconBox: {
-        width: 52, height: 52, borderRadius: 26,
+        width: s(52), height: s(52), borderRadius: s(26),
         backgroundColor: "#EFF6FF",
         alignItems: "center", justifyContent: "center",
-        marginRight: 12,
+        marginRight: s(12),
     },
-    info: { flex: 1, justifyContent: "center", gap: 5 },
-    name: { fontSize: 15, fontWeight: "600", color: "#111827" },
-    capRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-    capText: { fontSize: 12, color: "#6B7280", fontWeight: "500" },
-    right: { alignItems: "flex-end", marginLeft: 8 },
+    info: { flex: 1, justifyContent: "center", gap: s(5) },
+    name: { fontSize: sf(15), fontWeight: "600", color: "#111827" },
+    capRow: { flexDirection: "row", alignItems: "center", gap: s(4) },
+    capText: { fontSize: sf(12), color: "#6B7280", fontWeight: "500" },
+    right: { alignItems: "flex-end", marginLeft: s(8) },
     qrBadge: {
-        borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3,
+        borderRadius: s(6), paddingHorizontal: s(8), paddingVertical: s(3),
         borderWidth: 1,
     },
     qrBadgeActive: { backgroundColor: "#F0FDF4", borderColor: "#BBF7D0" },
     qrBadgeInactive: { backgroundColor: "#F9FAFB", borderColor: "#E5E7EB" },
-    qrText: { fontSize: 11, fontWeight: "600" },
+    qrText: { fontSize: sf(11), fontWeight: "600" },
     qrTextActive: { color: "#16A34A" },
     qrTextInactive: { color: "#9CA3AF" },
 });

@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { s, sf } from "../../Extras/responsive";
 
 const ACCOUNTS_TYPES = ["Admin", "Waiter", "Chef", "Cashier"];
 
@@ -162,90 +163,36 @@ export default function AccountsFormPopup({
 
 const styles = StyleSheet.create({
   overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
+    flex: 1, backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center", alignItems: "center",
   },
-  popup: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 24,
-    gap: 16,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#4a42e0",
-  },
-  field: {
-    gap: 6,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#555",
-  },
+  popup: { backgroundColor: "#fff", borderRadius: s(12), padding: s(24), gap: s(16) },
+  title: { fontSize: sf(18), fontWeight: "bold", color: "#4a42e0" },
+  field: { gap: s(6) },
+  label: { fontSize: sf(13), fontWeight: "600", color: "#555" },
   input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 15,
-    color: "#222",
-    justifyContent: "center",
+    borderWidth: 1, borderColor: "#ddd", borderRadius: s(8),
+    paddingHorizontal: s(12), paddingVertical: s(10),
+    fontSize: sf(15), color: "#222", justifyContent: "center",
   },
-  dropdownText: {
-    fontSize: 15,
-    color: "#222",
-  },
-  placeholder: {
-    fontSize: 15,
-    color: "#999",
-  },
+  dropdownText: { fontSize: sf(15), color: "#222" },
+  placeholder: { fontSize: sf(15), color: "#999" },
   submitBtn: {
-    alignItems: "center",
-    paddingVertical: 10,
-    borderRadius: 8,
-    backgroundColor: "#4a42e0",
+    alignItems: "center", paddingVertical: s(10), borderRadius: s(8), backgroundColor: "#4a42e0",
   },
-  submitBtnText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
+  submitBtnText: { color: "#fff", fontWeight: "600" },
   closeBtn: {
-    alignItems: "center",
-    paddingVertical: 10,
-    borderRadius: 8,
-    backgroundColor: "#eee",
+    alignItems: "center", paddingVertical: s(10), borderRadius: s(8), backgroundColor: "#eee",
   },
-  closeBtnText: {
-    color: "#333",
-    fontWeight: "600",
-  },
+  closeBtnText: { color: "#333", fontWeight: "600" },
   dropdownOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.3)",
-    justifyContent: "center",
-    alignItems: "center",
+    flex: 1, backgroundColor: "rgba(0,0,0,0.3)",
+    justifyContent: "center", alignItems: "center",
   },
   dropdownList: {
-    width: "70%",
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    paddingVertical: 8,
+    width: "70%", backgroundColor: "#fff", borderRadius: s(10), paddingVertical: s(8),
   },
-  option: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-  },
-  optionText: {
-    fontSize: 15,
-    color: "#222",
-  },
-  optionTextSelected: {
-    color: "#4a42e0",
-    fontWeight: "700",
-  },
+  option: { paddingVertical: s(12), paddingHorizontal: s(16) },
+  optionText: { fontSize: sf(15), color: "#222" },
+  optionTextSelected: { color: "#4a42e0", fontWeight: "700" },
 });
