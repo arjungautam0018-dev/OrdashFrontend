@@ -145,10 +145,8 @@ export default function AddStockScreen() {
         if (!trimmed || categories.includes(trimmed)) return;
         setCatLoading(true);
         try {
-            const res = await fetch(API.addCategory, {
+            const res = await authFetch(API.addCategory, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
                 body: JSON.stringify({ name: trimmed }),
             });
             const data = await res.json();
@@ -188,9 +186,8 @@ export default function AddStockScreen() {
                 } as any);
             }
 
-            const res = await fetch(API.addProduct, {
+            const res = await authFetch(API.addProduct, {
                 method: "POST",
-                credentials: "include",
                 body: formData,
                 // do NOT set Content-Type — fetch sets it with boundary automatically
             });

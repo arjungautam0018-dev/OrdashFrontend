@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path, Circle } from "react-native-svg";
 import { s, sf } from "../Extras/responsive";
 
@@ -121,7 +121,7 @@ export default function DashboardCustomer({ route }: Props) {
     }, []);
 
     return (
-        <View style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#0D6E4F" }} edges={["left", "right", "bottom"]}>
             <CustomerTopBar tableName={tableName} shopName={shopName} />
             <Tab.Navigator
                 screenOptions={({ route: r }) => ({
@@ -171,6 +171,6 @@ export default function DashboardCustomer({ route }: Props) {
                     {() => <OrdersScreen sellerId={sellerId} tableId={tableId} />}
                 </Tab.Screen>
             </Tab.Navigator>
-        </View>
+        </SafeAreaView>
     );
 }

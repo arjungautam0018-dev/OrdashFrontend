@@ -23,6 +23,7 @@ export interface TableItem {
     name: string;
     capacity: number;
     qrcode?: string | null;
+    code?: string | null;
 }
 
 interface Props {

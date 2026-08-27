@@ -1,15 +1,12 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
     View, Text, FlatList, StyleSheet,
     ActivityIndicator, TouchableOpacity, Alert,
 } from "react-native";
 import { s, sf } from "../../Extras/responsive";
-import { io, Socket } from "socket.io-client";
 import OrderCard, { OrderItem } from "../../components/Customer/Orders/OrderCard";
-import { API, BASE_URL } from "../../Extras/api";
+import { API } from "../../Extras/api";
 import { notifyOrderReady, notifyOrderDone, notifyOrderConfirmed, notifyOrderPreparing } from "../../features/notification";
-
-const SERVER_URL = BASE_URL.replace("/api", "");
 
 interface Props {
     sellerId: string;
@@ -20,7 +17,6 @@ export default function OrdersScreen({ sellerId, tableId }: Props) {
     const [orders, setOrders] = useState<OrderItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [requesting, setRequesting] = useState(false);
-    const socketRef = useRef<Socket | null>(null);
 
     const fetchOrders = useCallback(async () => {
         setLoading(true);
@@ -35,40 +31,10 @@ export default function OrdersScreen({ sellerId, tableId }: Props) {
         }
     }, [sellerId, tableId]);
 
-    // Socket: join table room + listen for status changes
+    // TODO: subscribe to Redis SSE/channel for table order status updates
+    // Replace this effect with your Redis listener that calls setOrders on order:status events
     useEffect(() => {
         fetchOrders();
-
-        const socket = io(SERVER_URL, {
-            transports: ["websocket"],
-            reconnection: true,
-            reconnectionAttempts: Infinity,
-            reconnectionDelay: 2000,
-        });
-        socketRef.current = socket;
-
-        socket.on("connect", () => {
-            socket.emit("join:table", { sellerId, tableId });
-        });
-
-        socket.on("order:status", ({ orderId, status }: { orderId: string; status: OrderItem["status"] }) => {
-            setOrders(prev => prev.map(o => {
-                if (o._id !== orderId) return o;
-                if (status === "confirmed") notifyOrderConfirmed();
-                if (status === "preparing") notifyOrderPreparing();
-                if (status === "ready")     notifyOrderReady();
-                if (status === "done")      notifyOrderDone();
-                return { ...o, status };
-            }));
-        });
-
-        socket.on("disconnect", () => {
-            if (__DEV__) console.log("[CustomerOrders] socket disconnected");
-        });
-
-        return () => {
-            socket.disconnect();
-        };
     }, [sellerId, tableId, fetchOrders]);
 
     // Request bill — uses the most recent non-done order

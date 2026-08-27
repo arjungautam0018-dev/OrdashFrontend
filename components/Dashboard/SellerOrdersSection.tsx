@@ -1,17 +1,13 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     View, Text, StyleSheet, FlatList, TouchableOpacity,
     ActivityIndicator, RefreshControl,
 } from "react-native";
 import { s, sf } from "../../Extras/responsive";
-import { io, Socket } from "socket.io-client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SellerOrderCard, { SellerOrder, OrderStatus } from "./SellerOrderCard";
-import { API, BASE_URL } from "../../Extras/api";
+import { API } from "../../Extras/api";
 import { notifyNewOrder, notifyBillRequested } from "../../features/notification";
-
-// Socket connects to the base server URL (no /api)
-const SERVER_URL = BASE_URL.replace("/api", "");
 
 type FilterTab = "active" | "done" | "all";
 const FILTER_TABS: { key: FilterTab; label: string }[] = [
@@ -25,9 +21,7 @@ export default function SellerOrdersSection() {
     const [orders, setOrders]       = useState<SellerOrder[]>([]);
     const [loading, setLoading]     = useState(true);
     const [refreshing, setRefreshing] = useState(false);
-    const [connected, setConnected] = useState(false);
     const [filter, setFilter]       = useState<FilterTab>("active");
-    const socketRef = useRef<Socket | null>(null);
 
     // ── Initial REST fetch ─────────────────────────────────────────────────────
     const fetchOrders = useCallback(async (silent = false) => {
@@ -53,67 +47,13 @@ export default function SellerOrdersSection() {
         }
     }, []);
 
-    // ── Socket setup ───────────────────────────────────────────────────────────
+    // TODO: subscribe to Redis SSE/channel for seller order events
+    // Replace this effect with your Redis listener that calls:
+    //   setOrders(prev => [order, ...prev]) on order:new
+    //   setOrders(prev => prev.map(...)) on order:status
+    //   notifyBillRequested(tableName) on order:bill
     useEffect(() => {
-        let sellerId: string | null = null;
-
-        const setup = async () => {
-            // Get sellerId from session
-            try {
-                const raw = await AsyncStorage.getItem("session");
-                if (raw) sellerId = JSON.parse(raw)?.sellerId ?? JSON.parse(raw)?._id ?? null;
-            } catch {}
-
-            // Initial data load
-            await fetchOrders(false);
-
-            if (__DEV__) console.log(`[SellerOrders] connecting socket to ${SERVER_URL}`);
-            const socket = io(SERVER_URL, {
-                transports: ["websocket"],
-                reconnection: true,
-                reconnectionAttempts: Infinity,
-                reconnectionDelay: 2000,
-                timeout: 10000,
-            });
-            socketRef.current = socket;
-
-            socket.on("connect", () => {
-                if (__DEV__) console.log("[SellerOrders] socket connected:", socket.id);
-                setConnected(true);
-                if (sellerId) {
-                    socket.emit("join:seller", { sellerId });
-                }
-            });
-
-            socket.on("order:new", (order: SellerOrder) => {
-                if (__DEV__) console.log("[SellerOrders] order:new:", order._id);
-                setOrders(prev => [order, ...prev]);
-                notifyNewOrder(order.tableName ?? "A table", order.total);
-            });
-
-            socket.on("order:bill", ({ tableName }: { tableName: string }) => {
-                notifyBillRequested(tableName ?? "A table");
-            });
-
-            socket.on("order:status", ({ orderId, status }: { orderId: string; status: OrderStatus }) => {
-                setOrders(prev => prev.map(o => o._id === orderId ? { ...o, status } : o));
-            });
-
-            socket.on("disconnect", (reason) => {
-                if (__DEV__) console.warn("[SellerOrders] socket disconnected:", reason);
-                setConnected(false);
-            });
-
-            socket.on("connect_error", (err) => {
-                if (__DEV__) console.error("[SellerOrders] socket connect_error:", err.message);
-            });
-        };
-
-        setup();
-
-        return () => {
-            socketRef.current?.disconnect();
-        };
+        fetchOrders(false);
     }, [fetchOrders]);
 
     // ── Status update ──────────────────────────────────────────────────────────
@@ -158,12 +98,6 @@ export default function SellerOrdersSection() {
 
     return (
         <View style={styles.wrapper}>
-            {/* Live indicator */}
-            <View style={styles.liveRow}>
-                <View style={[styles.liveDot, connected ? styles.liveDotOn : styles.liveDotOff]} />
-                <Text style={styles.liveText}>{connected ? "Live" : "Reconnecting..."}</Text>
-            </View>
-
             {/* Filter tabs */}
             <View style={styles.tabRow}>
                 {FILTER_TABS.map(tab => (
@@ -217,15 +151,6 @@ export default function SellerOrdersSection() {
 const styles = StyleSheet.create({
     wrapper: { flex: 1 },
     centered: { flex: 1, alignItems: "center", justifyContent: "center" },
-
-    liveRow: {
-        flexDirection: "row", alignItems: "center",
-        paddingHorizontal: s(14), paddingTop: s(10), gap: s(6),
-    },
-    liveDot: { width: s(8), height: s(8), borderRadius: s(4) },
-    liveDotOn:  { backgroundColor: "#16A34A" },
-    liveDotOff: { backgroundColor: "#EF4444" },
-    liveText: { fontSize: sf(12), fontWeight: "600", color: "#6B7280" },
 
     tabRow: {
         flexDirection: "row",

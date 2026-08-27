@@ -1,10 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import WaiterOrderScreen from './waiterorder';
 
-export default function PlaceOrderSeller(){
-    return(
-        <View>
-            <Text>ITS the PlaceOrder for seller!</Text>
-        </View>
-    )
+export default function PlaceOrderSeller() {
+    return <WaiterOrderScreen />;
 }

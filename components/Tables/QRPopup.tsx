@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
     Modal, View, Text, TouchableOpacity,
     StyleSheet, ActivityIndicator, Alert, Image,
 } from "react-native";
+import ViewShot from "react-native-view-shot";
 import { s, sf, sw } from "../../Extras/responsive";
-import * as FileSystem from "expo-file-system/legacy";
 import * as MediaLibrary from "expo-media-library";
 import Svg, { Path } from "react-native-svg";
 import { API } from "../../Extras/api";
@@ -38,10 +38,12 @@ export default function QRPopup({ table, onClose, onEdit, onQRGenerated }: Props
     const [qrImage, setQrImage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [downloading, setDownloading] = useState(false);
+    const [shopName, setShopName] = useState<string>("Our Restaurant");
+
+    const viewShotRef = useRef<ViewShot>(null);
 
     useEffect(() => {
         if (table) {
-            // If QR already stored on the table object, use it
             if (table.qrcode) {
                 setQrImage(table.qrcode);
             } else {
@@ -49,6 +51,11 @@ export default function QRPopup({ table, onClose, onEdit, onQRGenerated }: Props
                 generateQR();
             }
         }
+        // fetch shop name
+        authFetch(API.sellerProfile)
+            .then(r => r.json())
+            .then(d => { if (d.success && d.seller?.shopName) setShopName(d.seller.shopName); })
+            .catch(() => {});
     }, [table]);
 
     const generateQR = async () => {
@@ -75,21 +82,15 @@ export default function QRPopup({ table, onClose, onEdit, onQRGenerated }: Props
     };
 
     const handleDownload = async () => {
-        if (!qrImage) return;
+        if (!qrImage || !viewShotRef.current) return;
         setDownloading(true);
         try {
-            const { status } = await MediaLibrary.requestPermissionsAsync();
-            if (status !== "granted") {
-                Alert.alert("Permission needed", "Allow media library access to save the QR code.");
-                return;
-            }
-            const filename = `qr_${table?._id}_${Date.now()}.png`;
-            const fileUri = FileSystem.documentDirectory + filename;
-            await FileSystem.downloadAsync(qrImage, fileUri);
-            await MediaLibrary.saveToLibraryAsync(fileUri);
-            Alert.alert("Saved", "QR code saved to your photo library.");
-        } catch {
-            Alert.alert("Error", "Could not download QR code.");
+            const uri = await (viewShotRef.current as any).capture();
+            await MediaLibrary.saveToLibraryAsync(uri);
+            Alert.alert("Saved", "QR card saved to your photo library.");
+        } catch (e) {
+            console.error("[QRPopup] download error:", e);
+            Alert.alert("Error", String(e));
         } finally {
             setDownloading(false);
         }
@@ -121,7 +122,7 @@ export default function QRPopup({ table, onClose, onEdit, onQRGenerated }: Props
                     </TouchableOpacity>
                 </View>
 
-                {/* QR area */}
+                {/* QR area — visible preview */}
                 <View style={styles.qrBox}>
                     {loading ? (
                         <View style={styles.qrPlaceholder}>
@@ -134,6 +135,9 @@ export default function QRPopup({ table, onClose, onEdit, onQRGenerated }: Props
                         <View style={styles.qrPlaceholder}>
                             <Text style={styles.qrLoadingText}>No QR yet</Text>
                         </View>
+                    )}
+                    {table?.code && (
+                        <Text style={styles.codeLabel}>{table.code}</Text>
                     )}
                 </View>
 
@@ -150,6 +154,21 @@ export default function QRPopup({ table, onClose, onEdit, onQRGenerated }: Props
                     </TouchableOpacity>
                 </View>
             </View>
+
+            {/* Hidden ViewShot card — captured on download */}
+            {qrImage && (
+                <ViewShot
+                    ref={viewShotRef}
+                    options={{ format: "png", quality: 1 }}
+                    style={styles.hiddenCard}
+                >
+                    <View style={styles.cardBg}>
+                        <Image source={{ uri: qrImage }} style={styles.cardQR} resizeMode="contain" />
+                        <Text style={styles.cardCode}>{table?.code ?? table?.name}</Text>
+                        <Text style={styles.cardShopName}>{shopName}</Text>
+                    </View>
+                </ViewShot>
+            )}
         </Modal>
     );
 }
@@ -182,7 +201,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#F9FAFB",
     },
     editBtnText: { fontSize: sf(13), fontWeight: "600", color: "#6B7280" },
-
     qrBox: {
         alignItems: "center", justifyContent: "center",
         backgroundColor: "#F9FAFB", borderRadius: s(16),
@@ -192,7 +210,10 @@ const styles = StyleSheet.create({
     qrImage: { width: sw(220), height: sw(220), borderRadius: s(8) },
     qrPlaceholder: { width: sw(220), height: sw(220), alignItems: "center", justifyContent: "center", gap: s(8) },
     qrLoadingText: { fontSize: sf(14), color: "#9CA3AF", fontWeight: "500" },
-
+    codeLabel: {
+        marginTop: s(12), fontSize: sf(20), fontWeight: "800",
+        color: "#1E3A8A", letterSpacing: 3, textAlign: "center",
+    },
     actions: { gap: s(10) },
     downloadBtn: {
         flexDirection: "row", alignItems: "center", justifyContent: "center",
@@ -200,4 +221,23 @@ const styles = StyleSheet.create({
         backgroundColor: "#F7D060",
     },
     downloadText: { fontSize: sf(15), fontWeight: "700", color: "#1a1a1a" },
+
+    // Hidden capture card
+    hiddenCard: {
+        position: "absolute", top: -2000, left: 0,
+    },
+    cardBg: {
+        width: sw(320), backgroundColor: "#fff",
+        alignItems: "center", paddingVertical: s(32),
+        paddingHorizontal: s(24), borderRadius: s(16),
+    },
+    cardQR: { width: sw(260), height: sw(260), marginBottom: s(20) },
+    cardCode: {
+        fontSize: sf(24), fontWeight: "800", color: "#1E3A8A",
+        letterSpacing: 2, marginBottom: s(8), textAlign: "center",
+    },
+    cardShopName: {
+        fontSize: sf(15), fontWeight: "600", color: "#6B7280",
+        textAlign: "center",
+    },
 });
