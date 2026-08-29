@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
     View, Text, StyleSheet, FlatList, TouchableOpacity,
     ActivityIndicator, RefreshControl,
@@ -22,6 +22,8 @@ export default function SellerOrdersSection() {
     const [loading, setLoading]     = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [filter, setFilter]       = useState<FilterTab>("active");
+    const xhrRef = useRef<XMLHttpRequest | null>(null);
+
 
     // ── Initial REST fetch ─────────────────────────────────────────────────────
     const fetchOrders = useCallback(async (silent = false) => {
@@ -47,14 +49,56 @@ export default function SellerOrdersSection() {
         }
     }, []);
 
-    // TODO: subscribe to Redis SSE/channel for seller order events
-    // Replace this effect with your Redis listener that calls:
-    //   setOrders(prev => [order, ...prev]) on order:new
-    //   setOrders(prev => prev.map(...)) on order:status
-    //   notifyBillRequested(tableName) on order:bill
     useEffect(() => {
         fetchOrders(false);
     }, [fetchOrders]);
+
+    useEffect(() => {
+        AsyncStorage.getItem("session").then(raw => {
+            const sellerId = raw ? JSON.parse(raw)?.sellerId : null;
+            if (!sellerId) {
+                if (__DEV__) console.warn("[SellerOrders] No sellerId found in session");
+                return;
+            }
+            const url = API.sellerEvents(sellerId);
+            const xhr = new XMLHttpRequest();
+            (xhr as any).seenBytes = 0;
+            xhr.open("GET", url, true);
+            xhr.setRequestHeader("Accept", "text/event-stream");
+
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState >= 3 && xhr.status === 200) {
+                    const newData = xhr.responseText.slice((xhr as any).seenBytes);
+                    (xhr as any).seenBytes = xhr.responseText.length;
+                    for (const line of newData.split("\n")) {
+                        if (!line.startsWith("data: ")) continue;
+                        try {
+                            const payload = JSON.parse(line.slice(6));
+                            if (payload.event === "order:new") {
+                                notifyNewOrder(payload.order.tableName, payload.order.total);
+                                setOrders(prev => [payload.order, ...prev]);
+                            } else if (payload.event === "order:status") {
+                                setOrders(prev =>
+                                    prev.map(o =>
+                                        o._id === payload.orderId ? { ...o, status: payload.status } : o
+                                    )
+                                );
+                            } else if (payload.event === "order:bill") {
+                                notifyBillRequested(payload.tableName);
+                            }
+                        } catch { /* ignore malformed */ }
+                    }
+                }
+            };
+
+            xhr.send();
+            xhrRef.current = xhr;
+        });
+        return () => {
+            xhrRef.current?.abort();
+            xhrRef.current = null;
+        };
+    }, []);
 
     // ── Status update ──────────────────────────────────────────────────────────
     const handleStatusChange = useCallback(async (orderId: string, newStatus: OrderStatus) => {

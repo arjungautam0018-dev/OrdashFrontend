@@ -7,6 +7,15 @@ import { s, sf, sw } from "../Extras/responsive";
 import { CameraView, useCameraPermissions, BarcodeScanningResult } from "expo-camera";
 import Svg, { Path, Rect } from "react-native-svg";
 import { API } from "../Extras/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+function generateUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+}
+
+
 
 // ── Corner frame SVG ──────────────────────────────────────────────────────────
 const CornerTL = () => (
@@ -110,11 +119,23 @@ export default function ScanQR({ navigation }: { navigation?: any }) {
 
             if (data.success) {
                 console.log(`[Camera] success — navigating to DashboardCustomer with tableName="${data.tableName}"`);
+                //  Save session id locally for this table, so that the app can remember the table even if the user closes the app
+                const sessionId = generateUUID();
+                await AsyncStorage.setItem(
+                    `session_${data.tableId}`,
+                    sessionId
+                );
+
+                console.log(`[Camera] session id saved for tableId="${data.tableId}": ${sessionId}`);
+                console.log("[Camera] session id saved for table:" , data.tableId);
+
                 if (navigation) {
                     navigation.replace("DashboardCustomer", {
                         sellerId: data.sellerId,
                         tableId: data.tableId,
                         tableName: data.tableName,
+                        sessionId: sessionId,
+
                     });
                 } else {
                     console.warn("[Camera] no navigation prop, showing success card instead");

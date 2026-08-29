@@ -9,6 +9,7 @@ import CartCard from "./CartCard";
 import { MenuItem } from "../Menu/MenuCard";
 import { API } from "../../../Extras/api";
 import { notifyOrderPlaced } from "../../../features/notification";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Props {
     sellerId: string;
@@ -32,6 +33,17 @@ export default function CartSection({ sellerId, tableId, cart, menuItems, onIncr
         setLoading(true);
         if (__DEV__) console.log(`[CartSection] placing order — sellerId=${sellerId}, tableId=${tableId}`);
         try {
+            //Get session Id
+            const sessionId = await AsyncStorage.getItem(`session_${tableId}`);
+            if (!sessionId) {
+                Alert.alert("Error", "Session ID not found. Please try again.");
+                setLoading(false);
+                return;
+            }
+            if(__DEV__){
+                console.log(`[CartSection] sessionId=${sessionId}`);
+            }
+            
             const items = cartItems.map(i => ({
                 productId: i._id,
                 name: i.name,
@@ -42,7 +54,7 @@ export default function CartSection({ sellerId, tableId, cart, menuItems, onIncr
             const res = await fetch(API.placeOrder, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ sellerId, tableId, items }),
+                body: JSON.stringify({ sellerId, tableId, items,sessionId }),
             });
             if (__DEV__) console.log(`[CartSection] place order response status: ${res.status}`);
             const data = await res.json();

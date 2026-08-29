@@ -6,7 +6,7 @@ import {
 import { s, sf } from "../../Extras/responsive";
 import OrderCard, { OrderItem } from "../../components/Customer/Orders/OrderCard";
 import { API } from "../../Extras/api";
-import { notifyOrderReady, notifyOrderDone, notifyOrderConfirmed, notifyOrderPreparing } from "../../features/notification";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Props {
     sellerId: string;
@@ -21,8 +21,31 @@ export default function OrdersScreen({ sellerId, tableId }: Props) {
     const fetchOrders = useCallback(async () => {
         setLoading(true);
         try {
-            const res = await fetch(`${API.tableOrders}?sellerId=${sellerId}&tableId=${tableId}`);
-            const data = await res.json();
+            //Get session Id
+            const sessionId = await AsyncStorage.getItem(`session_${tableId}`);
+            if (!sessionId) {
+                if(__DEV__){
+                    console.warn(`[CustomerOrders] sessionId not found for tableId=${tableId}`);
+
+                }
+                setOrders([]);
+                setLoading(false);
+                return;
+            }
+
+        const url =
+            `${API.tableOrders}` +
+            `?sellerId=${encodeURIComponent(sellerId)}` +
+            `&tableId=${encodeURIComponent(tableId)}` +
+            `&sessionId=${encodeURIComponent(sessionId)}`;
+
+        if (__DEV__) {
+            console.log("[CustomerOrders] fetching:", url);
+        }
+
+        const res = await fetch(url);
+        const data = await res.json();
+        
             if (data.success) setOrders(data.orders);
         } catch (e) {
             if (__DEV__) console.error("[CustomerOrders] fetch error:", e);
@@ -31,11 +54,41 @@ export default function OrdersScreen({ sellerId, tableId }: Props) {
         }
     }, [sellerId, tableId]);
 
-    // TODO: subscribe to Redis SSE/channel for table order status updates
-    // Replace this effect with your Redis listener that calls setOrders on order:status events
     useEffect(() => {
         fetchOrders();
     }, [sellerId, tableId, fetchOrders]);
+
+    // Subscribe to Redis SSE for live order status updates on this table
+    useEffect(() => {
+        const url = API.tableEvents(sellerId, tableId);
+        const xhr = new XMLHttpRequest();
+        (xhr as any).seenBytes = 0;
+        xhr.open("GET", url, true);
+        xhr.setRequestHeader("Accept", "text/event-stream");
+
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState >= 3 && xhr.status === 200) {
+                const newData = xhr.responseText.slice((xhr as any).seenBytes);
+                (xhr as any).seenBytes = xhr.responseText.length;
+                for (const line of newData.split("\n")) {
+                    if (!line.startsWith("data: ")) continue;
+                    try {
+                        const payload = JSON.parse(line.slice(6));
+                        if (payload.event === "order:status") {
+                            setOrders(prev =>
+                                prev.map(o => o._id === payload.orderId ? { ...o, status: payload.status } : o)
+                            );
+                        } else if (payload.event === "order:new") {
+                            setOrders(prev => [payload.order, ...prev]);
+                        }
+                    } catch { /* ignore malformed */ }
+                }
+            }
+        };
+
+        xhr.send();
+        return () => xhr.abort();
+    }, [sellerId, tableId]);
 
     // Request bill — uses the most recent non-done order
     const handleRequestBill = useCallback(async () => {
