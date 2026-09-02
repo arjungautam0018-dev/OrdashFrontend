@@ -33,16 +33,17 @@ export default function CartSection({ sellerId, tableId, cart, menuItems, onIncr
         setLoading(true);
         if (__DEV__) console.log(`[CartSection] placing order — sellerId=${sellerId}, tableId=${tableId}`);
         try {
-            //Get session Id
-            const sessionId = await AsyncStorage.getItem(`session_${tableId}`);
+            // Get or generate sessionId for this table
+            let sessionId = await AsyncStorage.getItem(`session_${tableId}`);
             if (!sessionId) {
-                Alert.alert("Error", "Session ID not found. Please try again.");
-                setLoading(false);
-                return;
+                sessionId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                    const r = Math.random() * 16 | 0;
+                    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+                });
+                await AsyncStorage.setItem(`session_${tableId}`, sessionId);
+                if (__DEV__) console.log(`[CartSection] generated new sessionId=${sessionId}`);
             }
-            if(__DEV__){
-                console.log(`[CartSection] sessionId=${sessionId}`);
-            }
+            if (__DEV__) console.log(`[CartSection] sessionId=${sessionId}`);
             
             const items = cartItems.map(i => ({
                 productId: i._id,
