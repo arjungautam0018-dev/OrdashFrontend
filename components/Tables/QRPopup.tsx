@@ -5,7 +5,6 @@ import {
 } from "react-native";
 import ViewShot from "react-native-view-shot";
 import { s, sf, sw } from "../../Extras/responsive";
-import * as MediaLibrary from "expo-media-library";
 import Svg, { Path } from "react-native-svg";
 import { API } from "../../Extras/api";
 import { authFetch } from "../../Extras/authFetch";
@@ -82,6 +81,11 @@ export default function QRPopup({ table, onClose, onEdit, onQRGenerated }: Props
     };
 
     const handleDownload = async () => {
+        if (__DEV__) {
+            Alert.alert("Dev Mode", "Save to Gallery is not available in Expo Go. Build the APK to test this.");
+            return;
+        }
+        const MediaLibrary = require("expo-media-library");
         if (!qrImage || !viewShotRef.current) return;
         setDownloading(true);
         try {

@@ -1,9 +1,18 @@
-import * as Notifications from "expo-notifications";
-import { SchedulableTriggerInputTypes } from "expo-notifications";
 import { Alert } from "react-native";
 
-// ── Handler — call once at app startup ───────────────────────────────────────
+// Native notification imports — only used in production builds
+// In Expo Go (DEV), all notification calls are no-ops or alerts
+let Notifications: any = null;
+let SchedulableTriggerInputTypes: any = null;
+
+if (!__DEV__) {
+    const mod = require("expo-notifications");
+    Notifications = mod;
+    SchedulableTriggerInputTypes = mod.SchedulableTriggerInputTypes;
+}
+
 export function setupNotificationHandler() {
+    if (__DEV__ || !Notifications) return;
     Notifications.setNotificationHandler({
         handleNotification: async () => ({
             shouldShowBanner: true,
@@ -14,8 +23,8 @@ export function setupNotificationHandler() {
     });
 }
 
-// ── Request OS permission ─────────────────────────────────────────────────────
 export async function requestPermissions(): Promise<boolean> {
+    if (__DEV__ || !Notifications) return true;
     const { status } = await Notifications.requestPermissionsAsync();
     if (status !== "granted") {
         Alert.alert("Permission required", "Please allow notifications to receive order updates.");
@@ -24,8 +33,8 @@ export async function requestPermissions(): Promise<boolean> {
     return true;
 }
 
-// ── Core fire immediately ─────────────────────────────────────────────────────
-export async function sendNotification(title: string, body: string): Promise<void> {
+async function sendNotification(title: string, body: string): Promise<void> {
+    if (__DEV__ || !Notifications) return;
     const ok = await requestPermissions();
     if (!ok) return;
     await Notifications.scheduleNotificationAsync({
@@ -37,64 +46,36 @@ export async function sendNotification(title: string, body: string): Promise<voi
     });
 }
 
-// ── Customer: order placed successfully ──────────────────────────────────────
-export async function notifyOrderPlaced(): Promise<void> {
-    await sendNotification(
-        "🛒 Order Placed!",
-        "Your order has been received. We'll notify you when it's ready."
-    );
-}
-
-// ── Seller: new order arrived ─────────────────────────────────────────────────
-export async function notifyNewOrder(tableName: string, total: number): Promise<void> {
-    await sendNotification(
-        "🛎️ New Order!",
-        `${tableName} placed an order for ₹${total}`
-    );
-}
-
-// ── Seller: bill requested by customer ───────────────────────────────────────
-export async function notifyBillRequested(tableName: string): Promise<void> {
-    await sendNotification(
-        "🧾 Bill Requested",
-        `${tableName} has requested the bill`
-    );
-}
-
-// ── Customer: order confirmed by seller ──────────────────────────────────────
-export async function notifyOrderConfirmed(): Promise<void> {
-    await sendNotification(
-        "👍 Order Confirmed",
-        "The restaurant has confirmed your order."
-    );
-}
-
-// ── Customer: order is being prepared ────────────────────────────────────────
-export async function notifyOrderPreparing(): Promise<void> {
-    await sendNotification(
-        "👨‍🍳 Preparing Your Order",
-        "Your order is being prepared. Sit tight!"
-    );
-}
-
-// ── Customer: order is ready ──────────────────────────────────────────────────
-export async function notifyOrderReady(): Promise<void> {
-    await sendNotification(
-        "✅ Order Ready!",
-        "Your order is ready. Enjoy your meal!"
-    );
-}
-
-// ── Customer: order is being finalized (done) ─────────────────────────────────
-export async function notifyOrderDone(): Promise<void> {
-    await sendNotification(
-        "🙏 Order Complete",
-        "Your order has been finalized. Thank you!"
-    );
-}
-
-// ── Init (call once in App.js) ────────────────────────────────────────────────
 export async function initializeNotification(): Promise<void> {
+    if (__DEV__) return;
     setupNotificationHandler();
     await requestPermissions();
+}
+
+export async function notifyOrderPlaced(): Promise<void> {
+    await sendNotification("🛒 Order Placed!", "Your order has been received. We'll notify you when it's ready.");
+}
+
+export async function notifyNewOrder(tableName: string, total: number): Promise<void> {
+    await sendNotification("🛎️ New Order!", `${tableName} placed an order for ₹${total}`);
+}
+
+export async function notifyBillRequested(tableName: string): Promise<void> {
+    await sendNotification("🧾 Bill Requested", `${tableName} has requested the bill`);
+}
+
+export async function notifyOrderConfirmed(): Promise<void> {
+    await sendNotification("👍 Order Confirmed", "The restaurant has confirmed your order.");
+}
+
+export async function notifyOrderPreparing(): Promise<void> {
+    await sendNotification("👨‍🍳 Preparing Your Order", "Your order is being prepared. Sit tight!");
+}
+
+export async function notifyOrderReady(): Promise<void> {
+    await sendNotification("✅ Order Ready!", "Your order is ready. Enjoy your meal!");
+}
+
+export async function notifyOrderDone(): Promise<void> {
+    await sendNotification("🙏 Order Complete", "Your order has been finalized. Thank you!");
 }
