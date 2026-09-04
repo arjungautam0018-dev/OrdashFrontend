@@ -50,16 +50,15 @@ export default function EditProductPopup({ product, onClose, onSaved, onDeleted 
         }
         setSaving(true);
         try {
-            const formData = new FormData();
-            formData.append("name", name.trim());
-            formData.append("price", price);
-            formData.append("category", category);
-            if (product.type === "product" && qty !== "") {
-                formData.append("quantity", qty);
-            }
             const res = await authFetch(API.updateProduct(product._id), {
                 method: "PUT",
-                body: formData,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: name.trim(),
+                    price,
+                    category,
+                    ...(product.type === "product" && qty !== "" && { quantity: qty }),
+                }),
             });
             const data = await res.json();
             if (data.success) {

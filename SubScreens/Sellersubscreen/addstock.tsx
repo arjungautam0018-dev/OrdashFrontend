@@ -95,7 +95,7 @@ export default function AddStockScreen() {
             return;
         }
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            mediaTypes: ["images"],
             allowsEditing: true,   // lets user crop to square
             aspect: [1, 1],        // enforce 1:1 square crop
             quality: 0.8,
@@ -172,24 +172,25 @@ export default function AddStockScreen() {
         }
         setLoading(true);
         try {
-            const formData = new FormData();
-            formData.append("name", name.trim());
-            formData.append("price", price);
-            formData.append("category", selectedCategory);
-            formData.append("type", type);
-            if (type === "product") formData.append("quantity", String(quantity));
+            let imageBase64: string | null = null;
             if (image) {
-                formData.append("image", {
-                    uri: image.uri,
-                    type: image.type,
-                    name: image.name,
-                } as any);
+                const FileSystem = require("expo-file-system/legacy");
+                imageBase64 = await FileSystem.readAsStringAsync(image.uri, {
+                    encoding: FileSystem.EncodingType.Base64,
+                });
             }
 
             const res = await authFetch(API.addProduct, {
                 method: "POST",
-                body: formData,
-                // do NOT set Content-Type — fetch sets it with boundary automatically
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: name.trim(),
+                    price,
+                    category: selectedCategory,
+                    type,
+                    ...(type === "product" && { quantity: String(quantity) }),
+                    ...(imageBase64 && { imageBase64 }),
+                }),
             });
             const data = await res.json();
             if (data.success) {

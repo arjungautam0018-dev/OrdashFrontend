@@ -42,6 +42,7 @@ const CornerBR = () => (
 // ── Main component ────────────────────────────────────────────────────────────
 export default function ScanQR({ navigation }: { navigation?: any }) {
     const [permission, requestPermission] = useCameraPermissions();
+    console.log("[Camera] permission state:", permission?.granted, permission?.status);
     const [processing, setProcessing] = useState(false);
     const [scannedInfo, setScannedInfo] = useState<{ tableName?: string; message?: string } | null>(null);
     const lastScan = useRef<string | null>(null);
@@ -184,7 +185,7 @@ export default function ScanQR({ navigation }: { navigation?: any }) {
     return (
         <View style={styles.container}>
             <CameraView
-                style={StyleSheet.absoluteFillObject}
+                style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
                 facing="back"
                 barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
                 onBarcodeScanned={processing ? undefined : handleScanned}
