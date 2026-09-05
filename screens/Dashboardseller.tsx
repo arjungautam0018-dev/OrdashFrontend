@@ -95,7 +95,9 @@ export default function DashboardSellerE() {
         }}
       />
       <Tab.Screen name="Stock"     component={Stock}      />
-      <Tab.Screen name="Analytics" component={Analytics}  />
+      <Tab.Screen name="Analytics" component={Analytics}
+        options={{ tabBarStyle: { display: "none" } }}
+      />
     </Tab.Navigator>
   );
 }
