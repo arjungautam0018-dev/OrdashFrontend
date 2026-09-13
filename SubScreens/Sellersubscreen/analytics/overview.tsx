@@ -4,33 +4,22 @@ import { s } from "../../../Extras/responsive";
 import TodayCard from "../../../components/Analytics/TodayCard";
 import OverviewCard from "../../../components/Analytics/OverviewCard";
 import RevenueChart from "../../../components/Analytics/RevenueChart";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import CategoryDonut from "../../../components/Analytics/CategoryDonut";
+import TopItemsCard from "../../../components/Analytics/TopItemsCard";
+import PeakHoursCard from "../../../components/Analytics/PeakHoursCard";
 import { API } from "../../../Extras/api";
 import { authFetch } from "../../../Extras/authFetch";
 
-const CACHE_KEY = "analytics_today";
-
 export default function OverviewScreen() {
-    const [data, setData]           = useState<any>(null);
+    const [data, setData]             = useState<any>(null);
     const [refreshing, setRefreshing] = useState(false);
 
     const load = useCallback(async () => {
-        const cached = await AsyncStorage.getItem(CACHE_KEY);
-        if (cached) {
-            console.log("[analytics/today] loaded from AsyncStorage");
-            setData(JSON.parse(cached));
-        }
         try {
-            console.log("[analytics/today] fetching from API...");
             const res  = await authFetch(API.analyticsToday);
-            console.log("[analytics/today] response status:", res.status);
             const json = await res.json();
-            console.log("[analytics/today] response body:", JSON.stringify(json));
             if (json?.data) {
                 setData(json.data);
-                await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(json.data));
-            } else {
-                console.warn("[analytics/today] unexpected response:", JSON.stringify(json));
             }
         } catch (e) {
             console.error("[analytics/today] error:", e);
@@ -60,13 +49,19 @@ export default function OverviewScreen() {
             <TodayCard
                 revenue={`₹${today?.revenue ?? 0}`}
                 orders={String(today?.orders ?? 0)}
+                revenueGrowth={data?.revenueGrowth}
+                ordersGrowth={data?.ordersGrowth}
             />
             <OverviewCard
                 totalRevenue={`₹${today?.revenue ?? 0}`}
                 totalOrders={String(today?.orders ?? 0)}
                 avgOrder={today?.orders ? `₹${Math.round(today.revenue / today.orders)}` : "₹0"}
             />
-            <RevenueChart data={[]} />
+            <RevenueChart />
+            <CategoryDonut />
+            <TopItemsCard />
+            {/* TODO: fetch from GET /api/analytics/peak-hours */}
+            <PeakHoursCard />
         </ScrollView>
     );
 }

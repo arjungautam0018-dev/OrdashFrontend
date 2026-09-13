@@ -7,21 +7,15 @@ import { useNavigation } from "@react-navigation/native";
 import Svg, { Path } from "react-native-svg";
 import { s, sf } from "../../Extras/responsive";
 
-import OverviewScreen from "./analytics/overview";
-import ItemsScreen    from "./analytics/items";
-import DemandScreen   from "./analytics/demand";
+import OverviewScreen  from "./analytics/overview";
+import DemandScreen    from "./analytics/demand";
+import TablesScreen    from "./analytics/tables";
+import ProductsScreen  from "./analytics/products";
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 const OverviewIcon = ({ color }: { color: string }) => (
     <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
         <Path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"
-            stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
-    </Svg>
-);
-
-const ItemsIcon = ({ color }: { color: string }) => (
-    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-        <Path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
             stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
     </Svg>
 );
@@ -33,7 +27,19 @@ const DemandIcon = ({ color }: { color: string }) => (
     </Svg>
 );
 
-// ── Header ────────────────────────────────────────────────────────────────────
+const TableIcon = ({ color }: { color: string }) => (
+    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
+        <Path d="M3 5h18M3 12h18M5 5v14M19 5v14"
+            stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+);
+
+const ProductIcon = ({ color }: { color: string }) => (
+    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
+        <Path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2zM16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"
+            stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+);
 function AnalyticsHeader() {
     const navigation = useNavigation<any>();
     return (
@@ -96,13 +102,15 @@ export default function AnalyticsScreen() {
                     tabBarLabelStyle: { fontSize: sf(11), fontWeight: "600" },
                     tabBarIcon: ({ color }) => {
                         if (route.name === "Overview") return <OverviewIcon color={color} />;
-                        if (route.name === "Items")    return <ItemsIcon    color={color} />;
+                        if (route.name === "Tables")   return <TableIcon    color={color} />;
+                        if (route.name === "Products") return <ProductIcon  color={color} />;
                         if (route.name === "Demand")   return <DemandIcon   color={color} />;
                     },
                 })}
             >
                 <Tab.Screen name="Overview" component={OverviewScreen} />
-                <Tab.Screen name="Items"    component={ItemsScreen}    />
+                <Tab.Screen name="Tables"   component={TablesScreen}   />
+                <Tab.Screen name="Products" component={ProductsScreen} />
                 <Tab.Screen name="Demand"   component={DemandScreen}   />
             </Tab.Navigator>
         </View>

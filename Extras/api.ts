@@ -1,5 +1,5 @@
-const BASE_URL = "https://ordashbackend.onrender.com/api";
-const BASE_URL2 = "http://192.168.0.110:3000/api";
+const BASE_URL1 = "https://ordashbackend.onrender.com/api";
+const BASE_URL = "http://192.168.0.110:3000/api";
 export const API = {
   sellerSignup:    `${BASE_URL}/sellersignup`,
   sellerLogin:     `${BASE_URL}/sellerlogin`,
@@ -40,9 +40,18 @@ export const API = {
   // Analytics
   analyticsRevenue:   `${BASE_URL}/analytics/revenue`,
   analyticsTopItems:  `${BASE_URL}/analytics/top-items`,
-  analyticsPeakHours: `${BASE_URL}/analytics/peak-hours`,
-  analyticsDemand:    `${BASE_URL}/analytics/demand`,
-  analyticsToday : `${BASE_URL}/analytics/today`,
+  analyticsPeakHours:  `${BASE_URL}/analytics/peak-hours`,
+  analyticsDemand:     `${BASE_URL}/analytics/demand`,
+  analyticsToday:      `${BASE_URL}/analytics/today`,
+  analyticsCategories:     `${BASE_URL}/analytics/categories`,
+  analyticsTableRevenue:   `${BASE_URL}/analytics/table-revenue`,
+  analyticsTableOrders:    `${BASE_URL}/analytics/table-orders`,
+  analyticsActiveTables:      `${BASE_URL}/analytics/active-tables`,
+  analyticsAvgOrderByTable:   `${BASE_URL}/analytics/avg-order-by-table`,
+  analyticsMostOrdered:       `${BASE_URL}/analytics/most-ordered`,
+  analyticsHighestRevenue:    `${BASE_URL}/analytics/highest-revenue`,
+  analyticsFastestGrowing:    `${BASE_URL}/analytics/fastest-growing`,
+  analyticsDeclining:         `${BASE_URL}/analytics/declining`,
 
   // SSE Events
   sellerEvents:    (sellerId: string) => `${BASE_URL}/events/seller/${sellerId}`,
