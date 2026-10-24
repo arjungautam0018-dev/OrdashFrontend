@@ -9,6 +9,7 @@ import * as Updates from 'expo-updates';
 
 import CheckUser        from './screens/checkuser';
 import ScanQr           from './screens/scanner';
+import CustomerCodeEntry from './screens/CustomerCodeEntry';
 import SignupSeller      from './components/SignupSeller/SignupSeller';
 import LoginSeller       from './components/SignupSeller/LoginSeller';
 import DashboardSellere from './screens/Dashboardseller';
@@ -79,6 +80,7 @@ export default function App() {
         <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
           <Stack.Screen name="ChooseRole"       component={CheckUser} />
           <Stack.Screen name="QRScanner"        component={ScanQr} />
+          <Stack.Screen name="CustomerCodeEntry" component={CustomerCodeEntry} />
           <Stack.Screen name="SellerSignup"     component={SignupSeller} />
           <Stack.Screen name="SellerLogin"      component={LoginSeller} />
           <Stack.Screen name="DashboardSeller"  component={DashboardSellere} />

@@ -196,7 +196,8 @@ export default function WaiterOrderScreen({ sellerId: propSellerId }: Props) {
         setStep("pick");
     }, []);
 
-    const handleTableSelected = useCallback((table: TableItem) => {
+    const handleTableSelected = useCallback((table: TableItem, sellerId: string) => {
+        if (sellerId) setResolvedSellerId(sellerId);
         setSelectedTable(table);
         setStep("pick");
     }, []);

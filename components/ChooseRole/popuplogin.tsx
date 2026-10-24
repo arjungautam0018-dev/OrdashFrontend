@@ -7,6 +7,7 @@ import {
   Pressable,
   StyleSheet,
 } from "react-native";
+import { s, sf } from "../../Extras/responsive";
 
 type Props = {
   visible: boolean;
@@ -20,7 +21,7 @@ export default function PopupLogin({ visible, onClose, navigation }: Props) {
     if (role === "seller") {
       navigation.navigate("SellerLogin");
     } else {
-      navigation.navigate("QRScanner"); // customers scan QR to access menu
+      navigation.navigate("CustomerCodeEntry"); // customers enter the table code to access the menu
     }
   };
 

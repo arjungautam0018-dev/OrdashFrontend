@@ -3,7 +3,7 @@ const BASE_URL1 = "http://192.168.0.110:3000/api";
 export const API = {
   sellerSignup:    `${BASE_URL}/sellersignup`,
   sellerLogin:     `${BASE_URL}/sellerlogin`,
-  sellerProfile:   `${BASE_URL}/sellerprofile`,
+  sellerProfile:   `${BASE_URL}/seller/profile`,
   sellerLogout:    `${BASE_URL}/logout`,
 
   // Products

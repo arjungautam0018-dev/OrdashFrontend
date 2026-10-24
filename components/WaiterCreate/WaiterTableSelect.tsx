@@ -27,11 +27,12 @@ const SearchIcon = ({ size = 18, color = "#9CA3AF" }) => (
 );
 
 interface Props {
-    onTableSelected: (table: TableItem) => void;
+    onTableSelected: (table: TableItem, sellerId: string) => void;
 }
 
 export default function WaiterTableSelect({ onTableSelected }: Props) {
     const [tables, setTables] = useState<TableItem[]>([]);
+    const [sellerId, setSellerId] = useState("");
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
 
@@ -46,7 +47,12 @@ export default function WaiterTableSelect({ onTableSelected }: Props) {
         try {
             const res = await authFetch(API.getTables);
             const data = await res.json();
-            if (data.success) setTables(data.tables);
+            if (data.success) {
+                setTables(data.tables);
+                // /table/all returns the authenticated seller's id, so the
+                // "Select Table" flow can resolve the seller on its own.
+                if (data.sellerId) setSellerId(data.sellerId);
+            }
         } catch (e) {
             console.error("[WaiterTableSelect] fetch error:", e);
         } finally {
@@ -96,7 +102,7 @@ export default function WaiterTableSelect({ onTableSelected }: Props) {
                 renderItem={({ item }) => (
                     <TouchableOpacity
                         style={styles.card}
-                        onPress={() => onTableSelected(item)}
+                        onPress={() => onTableSelected(item, sellerId)}
                         activeOpacity={0.75}
                     >
                         <View style={styles.iconBox}>
