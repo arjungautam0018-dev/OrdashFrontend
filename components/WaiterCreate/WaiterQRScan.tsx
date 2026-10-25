@@ -123,7 +123,7 @@ export default function WaiterQRScan({ onTableResolved }: Props) {
     return (
         <View style={styles.container}>
             <CameraView
-                style={StyleSheet.absoluteFillObject}
+                style={StyleSheet.absoluteFill}
                 facing="back"
                 barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
                 onBarcodeScanned={processing ? undefined : handleScanned}

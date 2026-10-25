@@ -207,6 +207,17 @@ export default function ScanQR({ navigation }: { navigation?: any }) {
                 </View>
             </View>
 
+            {/* Fallback: enter the table code instead of scanning */}
+            <View style={styles.enterCodeBar}>
+                <TouchableOpacity
+                    style={styles.enterCodeBtn}
+                    activeOpacity={0.8}
+                    onPress={() => navigation && navigation.navigate("CustomerCodeEntry")}
+                >
+                    <Text style={styles.enterCodeText}>Enter table code instead</Text>
+                </TouchableOpacity>
+            </View>
+
             {/* Processing overlay */}
             {processing && (
                 <View style={styles.processingOverlay}>
@@ -242,6 +253,20 @@ const styles = StyleSheet.create({
     cornerTR: { top: 0, right: 0 },
     cornerBL: { bottom: 0, left: 0 },
     cornerBR: { bottom: 0, right: 0 },
+
+    enterCodeBar: {
+        position: "absolute", bottom: s(48), left: 0, right: 0,
+        alignItems: "center",
+    },
+    enterCodeBtn: {
+        flexDirection: "row", alignItems: "center",
+        backgroundColor: "rgba(255,255,255,0.12)",
+        paddingVertical: s(10), paddingHorizontal: s(20),
+        borderRadius: s(24), borderWidth: 1, borderColor: "rgba(255,255,255,0.5)",
+    },
+    enterCodeText: {
+        color: "#fff", fontSize: sf(14), fontWeight: "600",
+    },
 
     processingOverlay: {
         position: "absolute", top: 0, left: 0, right: 0, bottom: 0,

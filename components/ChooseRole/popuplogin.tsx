@@ -21,7 +21,7 @@ export default function PopupLogin({ visible, onClose, navigation }: Props) {
     if (role === "seller") {
       navigation.navigate("SellerLogin");
     } else {
-      navigation.navigate("CustomerCodeEntry"); // customers enter the table code to access the menu
+      navigation.navigate("QRScanner"); // customers scan QR to access the menu
     }
   };
 

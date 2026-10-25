@@ -13,7 +13,7 @@ export default function ChooseRole() {
       <TouchableOpacity
        style={[styles.card, shadowStyle]}
         activeOpacity={0.8}
-        onPress={()=> navigation.navigate("CustomerCodeEntry")}>
+        onPress={()=> navigation.navigate("QRScanner")}>
         <BagIcon width={40} height={40} color="#7DD3A0" />
 
         <View style={styles.textContainer}>

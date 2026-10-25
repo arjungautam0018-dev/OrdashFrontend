@@ -37,6 +37,22 @@
           "sounds": []
         }
       ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Ordash to access your camera to scan table QR codes.",
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": true
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow Ordash to access your photos.",
+          "savePhotosPermission": "Allow Ordash to save the QR code to your photo library.",
+          "granularPermissions": ["photo"]
+        }
+      ],
       "expo-updates",
       "expo-status-bar"
     ],

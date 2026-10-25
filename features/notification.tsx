@@ -1,54 +1,120 @@
-import { Alert } from "react-native";
+import { Alert, Platform } from "react-native";
 
-// Native notification imports — only used in production builds
-// In Expo Go (DEV), all notification calls are no-ops or alerts
+// expo-notifications is a native module available in Expo Go, development
+// builds and production builds. Local (scheduled) notifications work in all of
+// them; only *remote* push requires a custom dev client. We load the module
+// defensively so the app still renders on platforms where the native module
+// is missing (e.g. web), and we no longer gate everything behind __DEV__ — that
+// guard was silently disabling all notifications during dev/Expo Go testing.
 let Notifications: any = null;
 let SchedulableTriggerInputTypes: any = null;
-
-if (!__DEV__) {
+try {
     const mod = require("expo-notifications");
     Notifications = mod;
     SchedulableTriggerInputTypes = mod.SchedulableTriggerInputTypes;
+} catch {
+    Notifications = null;
 }
 
+// Android notification channel — created once. Required on Android 8+ for
+// notifications to display. expo-notifications' config plugin creates a default
+// channel, but we set our own so sound/importance are predictable.
+const CHANNEL_ID = "orders";
+let channelReady = false;
+
 export function setupNotificationHandler() {
-    if (__DEV__ || !Notifications) return;
+    if (!Notifications) return;
     Notifications.setNotificationHandler({
         handleNotification: async () => ({
+            // Note: in this expo-notifications version shouldShowBanner and
+            // shouldShowList are the required fields (shouldShowAlert is the
+            // deprecated one), so these are intentionally NOT replaced.
             shouldShowBanner: true,
             shouldShowList: true,
             shouldPlaySound: true,
             shouldSetBadge: true,
+            priority: Notifications.AndroidNotificationPriority?.HIGH,
         }),
     });
 }
 
-export async function requestPermissions(): Promise<boolean> {
-    if (__DEV__ || !Notifications) return true;
-    const { status } = await Notifications.requestPermissionsAsync();
-    if (status !== "granted") {
-        Alert.alert("Permission required", "Please allow notifications to receive order updates.");
+async function ensureChannel() {
+    if (!Notifications || channelReady) return;
+    channelReady = true;
+    if (Platform.OS === "android") {
+        try {
+            await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
+                name: "Order Updates",
+                importance: Notifications.AndroidImportance.HIGH,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: "#6C63FF",
+                showBadge: true,
+            });
+        } catch (e) {
+            console.warn("[notifications] channel setup failed:", e);
+        }
+    }
+}
+
+// Returns true if we may post a notification. Prompts the user only when we can
+// still ask again — avoids spamming an alert on every order once denied.
+async function canNotify(): Promise<boolean> {
+    if (!Notifications) return false;
+    try {
+        const current = await Notifications.getPermissionsAsync();
+        if (current.status === "granted") return true;
+        if (current.canAskAgain) {
+            const res = await Notifications.requestPermissionsAsync();
+            if (res.status !== "granted") {
+                Alert.alert(
+                    "Permission required",
+                    "Please allow notifications to receive order updates."
+                );
+                return false;
+            }
+            return true;
+        }
+        return false;
+    } catch {
         return false;
     }
-    return true;
+}
+
+export async function requestPermissions(): Promise<boolean> {
+    if (!Notifications) return false;
+    try {
+        const { status } = await Notifications.requestPermissionsAsync();
+        return status === "granted";
+    } catch {
+        return false;
+    }
 }
 
 async function sendNotification(title: string, body: string): Promise<void> {
-    if (__DEV__ || !Notifications) return;
-    const ok = await requestPermissions();
-    if (!ok) return;
-    await Notifications.scheduleNotificationAsync({
-        content: { title, body, sound: true },
-        trigger: {
+    if (!Notifications) return;
+    try {
+        await ensureChannel();
+        if (!(await canNotify())) return;
+
+        const trigger: any = {
             type: SchedulableTriggerInputTypes.TIME_INTERVAL,
             seconds: 1,
-        },
-    });
+        };
+        if (Platform.OS === "android") trigger.channelId = CHANNEL_ID;
+
+        await Notifications.scheduleNotificationAsync({
+            content: { title, body, sound: true },
+            trigger,
+        });
+    } catch (e) {
+        console.warn("[notifications] send failed:", e);
+    }
 }
 
 export async function initializeNotification(): Promise<void> {
-    if (__DEV__) return;
+    if (!Notifications) return;
     setupNotificationHandler();
+    await ensureChannel();
     await requestPermissions();
 }
 

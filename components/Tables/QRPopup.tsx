@@ -4,6 +4,7 @@ import {
     StyleSheet, ActivityIndicator, Alert, Image,
 } from "react-native";
 import ViewShot from "react-native-view-shot";
+import * as MediaLibrary from "expo-media-library";
 import { s, sf, sw } from "../../Extras/responsive";
 import Svg, { Path } from "react-native-svg";
 import { API } from "../../Extras/api";
@@ -39,7 +40,7 @@ export default function QRPopup({ table, onClose, onEdit, onQRGenerated }: Props
     const [downloading, setDownloading] = useState(false);
     const [shopName, setShopName] = useState<string>("Our Restaurant");
 
-    const viewShotRef = useRef<ViewShot>(null);
+    const viewShotRef = useRef<any>(null);
 
     useEffect(() => {
         if (table) {
@@ -81,20 +82,30 @@ export default function QRPopup({ table, onClose, onEdit, onQRGenerated }: Props
     };
 
     const handleDownload = async () => {
-        if (__DEV__) {
-            Alert.alert("Dev Mode", "Save to Gallery is not available in Expo Go. Build the APK to test this.");
-            return;
-        }
-        const MediaLibrary = require("expo-media-library");
         if (!qrImage || !viewShotRef.current) return;
         setDownloading(true);
         try {
+            // Ask for write access to the media library. writeOnly so we don't
+            // request read access we don't need; "photo" matches the app.json
+            // granularPermissions config so Android grants READ_MEDIA_IMAGES.
+            const { status } = await MediaLibrary.requestPermissionsAsync(true, ["photo"]);
+            if (status !== "granted") {
+                Alert.alert(
+                    "Permission needed",
+                    "Please allow access to photos so we can save the QR code."
+                );
+                return;
+            }
+
+            // Capture the composed QR card to a temporary image file, then save
+            // it to the gallery. The new class-based API (Asset.create) replaces
+            // the removed saveToLibraryAsync(), which throws at runtime here.
             const uri = await (viewShotRef.current as any).capture();
-            await MediaLibrary.saveToLibraryAsync(uri);
+            await MediaLibrary.Asset.create(uri);
             Alert.alert("Saved", "QR card saved to your photo library.");
-        } catch (e) {
+        } catch (e: any) {
             console.error("[QRPopup] download error:", e);
-            Alert.alert("Error", String(e));
+            Alert.alert("Could not save", String(e?.message ?? e));
         } finally {
             setDownloading(false);
         }
