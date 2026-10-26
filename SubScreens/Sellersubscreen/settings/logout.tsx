@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { authFetch } from "../../../Extras/authFetch";
 import { API } from "../../../Extras/api";
+import { registerForPushNotificationsAsync } from "../../../features/notification";
 
 export default function LogoutSettings() {
     const navigation = useNavigation<any>();
@@ -17,7 +18,19 @@ export default function LogoutSettings() {
             {
                 text: "Log out", style: "destructive", onPress: async () => {
                     setLoading(true);
-                    try { await authFetch(API.sellerLogout, { method: "POST" }); } catch {}
+                    try {
+                        // Unregister push token first so the backend stops
+                        // delivering notifications to this device after logout.
+                        const token = await registerForPushNotificationsAsync();
+                        if (token) {
+                            await fetch(API.pushUnregister, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ token }),
+                            }).catch(() => {});
+                        }
+                        await authFetch(API.sellerLogout, { method: "POST" });
+                    } catch {}
                     await AsyncStorage.removeItem("session");
                     // Walk to root and reset
                     let root: any = navigation;

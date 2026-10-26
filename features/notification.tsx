@@ -1,4 +1,5 @@
 import { Alert, Platform } from "react-native";
+import Constants from "expo-constants";
 
 // expo-notifications is a native module available in Expo Go, development
 // builds and production builds. Local (scheduled) notifications work in all of
@@ -144,4 +145,65 @@ export async function notifyOrderReady(): Promise<void> {
 
 export async function notifyOrderDone(): Promise<void> {
     await sendNotification("🙏 Order Complete", "Your order has been finalized. Thank you!");
+}
+
+/**
+ * Obtain the Expo push token for this device.
+ *
+ * Must be called from inside a dashboard (not at module-load time) so that
+ * the permission dialog has proper context and the channel is ready.
+ *
+ * Returns null when:
+ *  - permission is denied
+ *  - the device/emulator has no push support (simulator, web, etc.)
+ *  - expo-notifications is unavailable
+ *
+ * The caller is responsible for POSTing the token to the right backend endpoint.
+ */
+export async function registerForPushNotificationsAsync(): Promise<string | null> {
+    if (!Notifications) return null;
+
+    // Push only works on physical devices (not simulators / emulators).
+    const isDevice = Constants.isDevice ?? true;
+    if (!isDevice) {
+        if (__DEV__) console.warn("[push] Expo push tokens are not available on emulators/simulators.");
+        return null;
+    }
+
+    // Ensure the Android channel exists before requesting the token.
+    await ensureChannel();
+
+    // Request / check permission.
+    let granted = false;
+    try {
+        const { status: existing } = await Notifications.getPermissionsAsync();
+        if (existing === "granted") {
+            granted = true;
+        } else if (existing === "undetermined") {
+            const { status } = await Notifications.requestPermissionsAsync();
+            granted = status === "granted";
+        }
+    } catch {
+        return null;
+    }
+
+    if (!granted) {
+        if (__DEV__) console.warn("[push] notification permission not granted");
+        return null;
+    }
+
+    // Retrieve the Expo push token.  projectId is required for SDK 49+.
+    try {
+        const projectId =
+            Constants.expoConfig?.extra?.eas?.projectId ??
+            Constants.easConfig?.projectId;
+
+        const { data: token } = await Notifications.getExpoPushTokenAsync(
+            projectId ? { projectId } : undefined
+        );
+        return token ?? null;
+    } catch (e) {
+        console.warn("[push] getExpoPushTokenAsync failed:", e);
+        return null;
+    }
 }

@@ -6,6 +6,8 @@ import { SettingsIcon } from '../../Extras/icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { s, sf } from '../../Extras/responsive';
+import { API } from '../../Extras/api';
+import { registerForPushNotificationsAsync } from '../../features/notification';
 
 const LogoutIcon = ({ size = 20, color = "#fff" }: { size?: number; color?: string }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -38,6 +40,16 @@ export default function TopBar() {
   };
 
   const handleLogout = async () => {
+    try {
+      const token = await registerForPushNotificationsAsync();
+      if (token) {
+        await fetch(API.pushUnregister, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        }).catch(() => {});
+      }
+    } catch {}
     await AsyncStorage.removeItem('session');
     navigation.reset({ index: 0, routes: [{ name: 'SellerLogin' }] });
   };

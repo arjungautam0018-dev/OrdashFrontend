@@ -11,6 +11,8 @@ import CartScreen from "../SubScreens/Customersubscreen/cart";
 import OrdersScreen from "../SubScreens/Customersubscreen/orders";
 import { MenuItem } from "../components/Customer/Menu/MenuCard";
 import { API } from "../Extras/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { registerForPushNotificationsAsync } from "../features/notification";
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 
@@ -94,6 +96,28 @@ export default function DashboardCustomer({ route }: Props) {
         };
         loadMenu();
     }, [sellerId]);
+
+    // Register this device's Expo push token against the current table-session
+    // so the backend can deliver push notifications to *this* customer even when
+    // the app is closed.
+    useEffect(() => {
+        const registerPush = async () => {
+            try {
+                const sessionId = await AsyncStorage.getItem(`session_${tableId}`);
+                if (!sessionId) return; // no session yet — order screen will create one on first order
+                const token = await registerForPushNotificationsAsync();
+                if (!token) return;
+                await fetch(API.pushRegister, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ token, sellerId, tableId, sessionId }),
+                });
+            } catch (e) {
+                if (__DEV__) console.warn("[DashboardCustomer] push register failed:", e);
+            }
+        };
+        registerPush();
+    }, [sellerId, tableId]);
 
     const handleAdd = useCallback((item: MenuItem) => {
         setCart(prev => ({ ...prev, [item._id]: (prev[item._id] ?? 0) + 1 }));
